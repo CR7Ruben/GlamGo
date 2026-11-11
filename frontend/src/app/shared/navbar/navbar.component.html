@@ -1,0 +1,17 @@
+<header class="navbar">
+  <a routerLink="/" class="logo">
+    <span class="logo-text">Glam<span class="highlight">Go</span></span>
+  </a>
+
+  <nav class="nav-links">
+    <a *ngFor="let link of visibleLinks" [routerLink]="link.path" class="nav-item">
+      {{ link.label }}
+    </a>
+  </nav>
+
+  <div class="header-actions">
+    
+    <button class="btn btn-secondary" routerLink="/auth" [queryParams]="{ mode: 'login' }">Iniciar sesión</button>
+    <button class="btn btn-primary" routerLink="/auth" [queryParams]="{ mode: 'register' }">Registrarse</button>
+  </div>
+</header>

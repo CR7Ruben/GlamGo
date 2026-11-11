@@ -1,24 +1,7 @@
 <div class="page-container">
   <div class="landing-card">
 
-    <!-- Navbar -->
-    <header class="navbar">
-      <div class="logo">
-        <span class="logo-text">Glam<span class="highlight">Go</span></span>
-      </div>
-
-      <nav class="nav-links">
-        <a href="#" class="nav-item">Inicio</a>
-        <a href="#" class="nav-item">Categorías</a>
-        <a href="#" class="nav-item">¿Cómo funciona?</a>
-      </nav>
-
-      <div class="header-actions">
-        
-        <button class="btn btn-secondary" routerLink="/auth" [queryParams]="{ mode: 'login' }">Iniciar sesión</button>
-        <button class="btn btn-primary" routerLink="/auth" [queryParams]="{ mode: 'register' }">Registrarse</button>
-      </div>
-    </header>
+    <app-navbar></app-navbar>
 
     <!-- Hero -->
     <main class="hero-section">

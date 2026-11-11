@@ -10,6 +10,13 @@ export const routes: Routes = [
   { path: 'auth', 
     component: AuthComponent 
   },
+
+  { path: 'categorias', 
+    component: HomeComponent 
+  },
+  { path: 'como-funciona', 
+    component: HomeComponent 
+  },
   {
     path: '**',
     redirectTo: ''
