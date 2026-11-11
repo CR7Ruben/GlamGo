@@ -1,0 +1,352 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Roboto+Condensed:wght@400;500;700&display=swap');
+
+/* Variables de color de GlamGo */
+$bg-card: #fdf0f4;
+$bg-white: rgba(255, 255, 255, 0.75);
+$primary-pink: #d4608a;
+$primary-pink-dark: #c14b79;
+$gold: #d9a46a;
+$text-dark: #2a1d24;
+$text-muted: #3a2d34;
+$btn-secondary-bg: #f8e2ea;
+
+$font-main: 'Roboto Condensed', 'Roboto', 'Segoe UI', sans-serif;
+$font-logo: 'Playfair Display', Georgia, serif;
+
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.page-container {
+  background: linear-gradient(135deg, #f9eaf0 0%, #f3dbe5 100%);
+  height: 100vh;
+  padding: clamp(0.6rem, 1.4vh, 1.5rem);
+  font-family: $font-main;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Tarjeta: ocupa todo el alto disponible dentro del margen */
+.landing-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: $bg-card;
+  border-radius: clamp(14px, 1.6vw, 26px);
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(212, 96, 138, 0.15);
+}
+
+/* Navbar (más grande y fluida) */
+.navbar {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  background-color: $bg-white;
+  padding: clamp(1rem, 2.2vh, 1.7rem) clamp(1.5rem, 3.5vw, 4rem);
+
+  .logo-text {
+    font-family: $font-logo;
+    font-size: clamp(2rem, 2.6vw, 2.8rem);
+    font-weight: 400;
+    color: $text-dark;
+    letter-spacing: 0.5px;
+
+    .highlight {
+      color: $gold;
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: clamp(1.4rem, 2.2vw, 2.4rem);
+    margin-left: clamp(2rem, 3vw, 3.5rem);
+
+    .nav-item {
+      text-decoration: none;
+      color: $text-dark;
+      font-weight: 500;
+      font-size: clamp(1.05rem, 1.25vw, 1.3rem);
+      transition: color 0.2s;
+
+      &:hover {
+        color: $primary-pink;
+      }
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.8rem, 1.2vw, 1.3rem);
+    margin-left: auto;
+
+    .search-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: $text-dark;
+      padding: 0.4rem;
+      display: flex;
+      align-items: center;
+      margin-right: 0.4rem;
+
+      svg {
+        width: clamp(20px, 1.6vw, 26px);
+        height: auto;
+      }
+    }
+
+    .btn {
+      font-size: clamp(1rem, 1.15vw, 1.2rem);
+      padding: clamp(0.7rem, 1.4vh, 0.95rem) clamp(1.5rem, 2vw, 2.2rem);
+    }
+  }
+}
+
+/* Botones */
+.btn {
+  border: none;
+  border-radius: 12px;
+  padding: 0.7rem 1.6rem;
+  font-family: $font-main;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &-primary {
+    background: linear-gradient(135deg, #dc6c95 0%, $primary-pink-dark 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(212, 96, 138, 0.3);
+
+    &:hover {
+      filter: brightness(0.95);
+    }
+  }
+
+  &-secondary {
+    background-color: $btn-secondary-bg;
+    color: $text-dark;
+
+    &:hover {
+      background-color: darken($btn-secondary-bg, 4%);
+    }
+  }
+
+  &-lg {
+    padding: clamp(0.8rem, 1.8vh, 1.15rem) clamp(1.6rem, 2.2vw, 2.4rem);
+    font-size: clamp(1.05rem, 1.3vw, 1.35rem);
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+}
+
+/* Hero: se estira para llenar el espacio entre navbar y features */
+.hero-section {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  position: relative;
+  background: linear-gradient(135deg, #fde7ef 0%, #f9d3e2 100%);
+  overflow: hidden;
+
+  .hero-content {
+    z-index: 2;
+    padding: 1rem 0 1rem clamp(1.5rem, 4vw, 5rem);
+
+    .hero-title {
+      /* se ajusta al ancho Y al alto de la pantalla */
+      font-size: clamp(2.2rem, min(4.4vw, 8vh), 5rem);
+      line-height: 1.1;
+      color: $text-dark;
+      font-weight: 700;
+      margin: 0 0 clamp(0.8rem, 2vh, 1.6rem);
+
+      .pink-text {
+        color: $primary-pink;
+      }
+    }
+
+    .hero-description {
+      color: $text-muted;
+      font-size: clamp(1rem, min(1.4vw, 2.6vh), 1.5rem);
+      font-weight: 500;
+      line-height: 1.45;
+      margin: 0 0 clamp(1rem, 3vh, 2rem);
+    }
+  }
+
+  .hero-visual {
+    position: relative;
+    align-self: stretch;
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    .blob-bg {
+      position: absolute;
+      inset: 8% -10% -10% 0;
+      background: linear-gradient(135deg, #fbdbe7 0%, #f6c5d8 100%);
+      border-radius: 50% 0 0 50%;
+      z-index: 1;
+    }
+
+    .hero-image {
+      position: relative;
+      z-index: 2;
+      width: auto;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+
+    .decor-star {
+      position: absolute;
+      color: $primary-pink;
+      z-index: 3;
+
+      &.star-1 {
+        width: clamp(22px, 2.2vw, 36px);
+        bottom: 26%;
+        left: 6%;
+      }
+
+      &.star-2 {
+        width: clamp(16px, 1.7vw, 28px);
+        bottom: 38%;
+        left: 12%;
+      }
+    }
+
+    .arrow-draw {
+      position: absolute;
+      top: 6%;
+      left: 20%;
+      width: clamp(44px, 4.5vw, 80px);
+      color: $primary-pink;
+      z-index: 3;
+    }
+  }
+}
+
+/* Features */
+.features-bar {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background-color: $bg-white;
+  padding: clamp(1rem, 2.4vh, 2rem) clamp(1.5rem, 3.5vw, 4rem);
+
+  .feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    text-align: center;
+
+    .feature-icon {
+      color: $primary-pink;
+      display: flex;
+      align-items: center;
+
+      svg {
+        width: clamp(26px, 2.4vw, 40px);
+        height: auto;
+      }
+    }
+
+    .feature-title {
+      font-size: clamp(0.95rem, 1.2vw, 1.25rem);
+      font-weight: 700;
+      color: $text-dark;
+      line-height: 1.2;
+    }
+  }
+}
+
+/* Laptops con poca altura: se permite scroll para que nada se corte */
+@media (max-height: 600px) {
+  :host,
+  .page-container {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .landing-card {
+    height: auto;
+    min-height: calc(100vh - 1.2rem);
+  }
+
+  .hero-section {
+    min-height: 380px;
+  }
+}
+
+/* Tablet y móvil */
+@media (max-width: 820px) {
+  :host,
+  .page-container {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .landing-card {
+    height: auto;
+  }
+
+  .navbar {
+    padding: 0.9rem 1.2rem;
+
+    .nav-links {
+      display: none;
+    }
+
+    .logo-text {
+      font-size: 1.8rem;
+    }
+
+    .header-actions .btn {
+      font-size: 0.9rem;
+      padding: 0.6rem 1.1rem;
+    }
+  }
+
+  .hero-section {
+    flex: none;
+    grid-template-columns: 1fr;
+
+    .hero-content {
+      padding: 2rem 1.5rem 0;
+
+      .hero-title {
+        font-size: 2.4rem;
+      }
+
+      .hero-description {
+        font-size: 1.05rem;
+      }
+    }
+
+    .hero-visual .hero-image {
+      max-width: 320px;
+    }
+  }
+
+  .features-bar {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 1.5rem;
+    padding: 1.4rem 1.2rem;
+  }
+}
