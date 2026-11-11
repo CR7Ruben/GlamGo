@@ -9,6 +9,7 @@ $gold: #d9a46a;
 $text-dark: #2a1d24;
 $text-muted: #3a2d34;
 $btn-secondary-bg: #f8e2ea;
+$btn-secondary-hover: #f2d3de;
 
 $font-main: 'Roboto Condensed', 'Roboto', 'Segoe UI', sans-serif;
 $font-logo: 'Playfair Display', Georgia, serif;
@@ -16,12 +17,14 @@ $font-logo: 'Playfair Display', Georgia, serif;
 :host {
   display: block;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }
 
 .page-container {
-  background: linear-gradient(135deg, #f9eaf0 0%, #f3dbe5 100%);
+  background: linear-gradient(135deg, #f9dbe7 0%, #f3c4d7 100%);
   height: 100vh;
+  height: 100dvh;
   padding: clamp(0.6rem, 1.4vh, 1.5rem);
   font-family: $font-main;
   box-sizing: border-box;
@@ -40,7 +43,7 @@ $font-logo: 'Playfair Display', Georgia, serif;
   box-shadow: 0 10px 40px rgba(212, 96, 138, 0.15);
 }
 
-/* Navbar (más grande y fluida) */
+/* Navbar */
 .navbar {
   display: flex;
   align-items: center;
@@ -117,6 +120,7 @@ $font-logo: 'Playfair Display', Georgia, serif;
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
 
   &-primary {
     background: linear-gradient(135deg, #dc6c95 0%, $primary-pink-dark 100%);
@@ -133,7 +137,7 @@ $font-logo: 'Playfair Display', Georgia, serif;
     color: $text-dark;
 
     &:hover {
-      background-color: darken($btn-secondary-bg, 4%);
+      background-color: $btn-secondary-hover;
     }
   }
 
@@ -147,7 +151,7 @@ $font-logo: 'Playfair Display', Georgia, serif;
   }
 }
 
-/* Hero: se estira para llenar el espacio entre navbar y features */
+/* Hero */
 .hero-section {
   flex: 1;
   min-height: 0;
@@ -163,7 +167,6 @@ $font-logo: 'Playfair Display', Georgia, serif;
     padding: 1rem 0 1rem clamp(1.5rem, 4vw, 5rem);
 
     .hero-title {
-      /* se ajusta al ancho Y al alto de la pantalla */
       font-size: clamp(2.2rem, min(4.4vw, 8vh), 5rem);
       line-height: 1.1;
       color: $text-dark;
@@ -190,24 +193,30 @@ $font-logo: 'Playfair Display', Georgia, serif;
     min-height: 0;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
 
+    /* círculo grande detrás de la foto */
     .blob-bg {
       position: absolute;
-      inset: 8% -10% -10% 0;
+      width: min(40vw, 72vh);
+      aspect-ratio: 1;
+      border-radius: 50%;
       background: linear-gradient(135deg, #fbdbe7 0%, #f6c5d8 100%);
-      border-radius: 50% 0 0 50%;
       z-index: 1;
     }
 
+    /* foto redonda */
     .hero-image {
       position: relative;
       z-index: 2;
-      width: auto;
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      mix-blend-mode: multiply;
+      width: min(34vw, 62vh);
+      height: auto;
+      aspect-ratio: 1;
+      object-fit: cover;
+      object-position: center 20%;
+      border-radius: 50%;
+      border: 6px solid #ffffff;
+      box-shadow: 0 12px 40px rgba(212, 96, 138, 0.3);
     }
 
     .decor-star {
@@ -285,10 +294,10 @@ $font-logo: 'Playfair Display', Georgia, serif;
 
   .landing-card {
     height: auto;
-    min-height: calc(100vh - 1.2rem);
   }
 
   .hero-section {
+    flex: none;
     min-height: 380px;
   }
 }
@@ -299,6 +308,7 @@ $font-logo: 'Playfair Display', Georgia, serif;
   .page-container {
     height: auto;
     min-height: 100vh;
+    min-height: 100dvh;
     overflow: visible;
   }
 
@@ -317,36 +327,98 @@ $font-logo: 'Playfair Display', Georgia, serif;
       font-size: 1.8rem;
     }
 
-    .header-actions .btn {
-      font-size: 0.9rem;
-      padding: 0.6rem 1.1rem;
+    .header-actions {
+      gap: 0.6rem;
+
+      .btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.1rem;
+      }
     }
   }
 
   .hero-section {
     flex: none;
     grid-template-columns: 1fr;
+    text-align: center;
 
     .hero-content {
       padding: 2rem 1.5rem 0;
 
       .hero-title {
-        font-size: 2.4rem;
+        font-size: clamp(2.2rem, 9vw, 3.2rem);
       }
 
       .hero-description {
         font-size: 1.05rem;
+        margin-bottom: 1.5rem;
       }
     }
 
-    .hero-visual .hero-image {
-      max-width: 320px;
+    .hero-visual {
+      min-height: 0;
+      margin-top: 1.5rem;
+      padding-bottom: 1.5rem;
+
+      .blob-bg {
+        width: min(80vw, 340px);
+      }
+
+      .hero-image {
+        width: min(70vw, 300px);
+        border-width: 5px;
+      }
+
+      .arrow-draw {
+        left: 8%;
+        top: 4%;
+      }
+
+      .decor-star {
+        &.star-1 {
+          left: 12%;
+        }
+
+        &.star-2 {
+          left: 20%;
+        }
+      }
     }
   }
 
   .features-bar {
     grid-template-columns: repeat(2, 1fr);
     row-gap: 1.5rem;
-    padding: 1.4rem 1.2rem;
+    padding: 1.6rem 1.2rem;
+  }
+}
+
+/* Celulares chicos */
+@media (max-width: 480px) {
+  .page-container {
+    padding: 0.5rem;
+  }
+
+  .navbar {
+    padding: 0.8rem 0.9rem;
+
+    .logo-text {
+      font-size: 1.5rem;
+    }
+
+    .header-actions {
+      .search-btn {
+        display: none;
+      }
+
+      .btn {
+        font-size: 0.8rem;
+        padding: 0.55rem 0.8rem;
+      }
+    }
+  }
+
+  .features-bar .feature-item .feature-title {
+    font-size: 0.9rem;
   }
 }
