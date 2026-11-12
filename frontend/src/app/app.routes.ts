@@ -3,6 +3,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { AuthComponent } from './pages/auth/auth.component';
 import { CategoriasComponent } from './pages/categorias/categorias.component';
 import { CategoriaDetalleComponent } from './pages/categoria-detalle/categoria-detalle.component';
+import { ComoFuncionaComponent } from './pages/como-funciona/como-funciona.component';
 
 export const routes: Routes = [
   {
@@ -12,15 +13,14 @@ export const routes: Routes = [
   { path: 'auth', 
     component: AuthComponent 
   },
-
   { path: 'categorias', 
     component: CategoriasComponent 
   },
-  { path: 'como-funciona', 
-    component: HomeComponent 
-  },
   { path: 'categorias/:id', 
     component: CategoriaDetalleComponent 
+  },
+  { path: 'como-funciona', 
+      component: ComoFuncionaComponent 
   },
   {
     path: '**',
