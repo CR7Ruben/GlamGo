@@ -4,6 +4,8 @@ import { AuthComponent } from './pages/auth/auth.component';
 import { CategoriasComponent } from './pages/categorias/categorias.component';
 import { CategoriaDetalleComponent } from './pages/categoria-detalle/categoria-detalle.component';
 import { ComoFuncionaComponent } from './pages/como-funciona/como-funciona.component';
+import { authGuard } from './guards/auth.guard';
+import { PanelNegocioComponent } from './pages/panel-negocio/panel-negocio.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +23,9 @@ export const routes: Routes = [
   },
   { path: 'como-funciona', 
       component: ComoFuncionaComponent 
+  },
+  { path: 'panel-negocio', 
+    component: PanelNegocioComponent, canActivate: [authGuard] 
   },
   {
     path: '**',

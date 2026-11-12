@@ -1,0 +1,344 @@
+
+<section class="feedback">
+
+  <!-- ENCABEZADO -->
+
+  <div class="feedback-encabezado">
+    <div>
+      <p>
+        {{ modo === 'negocio'
+          ? 'Consulta y responde las reseñas de ' + nombreNegocio
+          : 'Cuéntanos cómo fue tu servicio en ' + nombreNegocio }}
+      </p>
+    </div>
+  </div>
+
+  <!-- MENSAJES -->
+
+  <p class="mensaje exito" *ngIf="mensaje" role="status">
+    {{ mensaje }}
+  </p>
+
+  <p class="mensaje error" *ngIf="error" role="alert">
+    {{ error }}
+  </p>
+
+  <!-- ================================== -->
+  <!-- VISTA DEL CLIENTE -->
+  <!-- ================================== -->
+
+  <ng-container *ngIf="modo === 'cliente'; else vistaNegocio">
+
+    <form
+      class="tarjeta formulario"
+      (ngSubmit)="publicarResena()">
+
+      <h3>Tu opinión es importante</h3>
+
+      <p>
+        Servicio:
+        <strong>{{ servicioActual }}</strong>
+      </p>
+
+      <label>¿Qué calificación le das?</label>
+
+      <div
+        class="estrellas seleccionar"
+        role="group"
+        aria-label="Calificación de 1 a 5 estrellas">
+
+        <button
+          type="button"
+          *ngFor="let numero of [1,2,3,4,5]"
+          [class.encendida]="numero <= calificacionNueva"
+          [attr.aria-label]="numero + ' estrellas'"
+          [attr.aria-pressed]="numero === calificacionNueva"
+          (click)="calificacionNueva = numero">
+          ★
+        </button>
+
+      </div>
+
+      <label for="comentarioFeedback">
+        Tu comentario
+      </label>
+
+      <textarea
+        id="comentarioFeedback"
+        name="comentarioFeedback"
+        [(ngModel)]="comentarioNuevo"
+        maxlength="1000"
+        rows="5"
+        placeholder="Describe tu experiencia con el servicio...">
+      </textarea>
+
+      <small>
+        {{ comentarioNuevo.length }}/1000 caracteres
+        · Mínimo 10
+      </small>
+
+      <button
+        type="submit"
+        class="boton-primario">
+        Publicar reseña
+      </button>
+
+    </form>
+
+  </ng-container>
+
+  <!-- ================================== -->
+  <!-- VISTA DEL NEGOCIO -->
+  <!-- ================================== -->
+
+  <ng-template #vistaNegocio>
+
+    <!-- ESTADÍSTICAS -->
+
+    <div class="resumen">
+
+      <div class="tarjeta resumen-item">
+        <span>Calificación promedio</span>
+
+        <strong>
+          {{ promedio | number:'1.1-1' }}
+          <span class="estrella">★</span>
+        </strong>
+      </div>
+
+      <div class="tarjeta resumen-item">
+        <span>Reseñas recibidas</span>
+        <strong>{{ resenas.length }}</strong>
+      </div>
+
+      <div class="tarjeta resumen-item">
+        <span>Sin responder</span>
+        <strong>{{ sinResponder }}</strong>
+      </div>
+
+    </div>
+
+    <!-- ================================== -->
+    <!-- LISTADO DE RESEÑAS -->
+    <!-- ================================== -->
+
+    <div class="tarjeta listado">
+
+      <div class="listado-encabezado">
+        <div>
+          <h3>Comentarios de clientes</h3>
+          <p>Conoce lo que opinan de tus servicios.</p>
+        </div>
+
+        <span>
+          {{ filtradas.length }} resultados
+        </span>
+      </div>
+
+      <!-- FILTROS -->
+
+      <div class="filtros">
+
+        <input
+          type="search"
+          aria-label="Buscar reseñas"
+          placeholder="Buscar cliente, servicio o comentario..."
+          [(ngModel)]="busqueda"
+          (ngModelChange)="reiniciarPagina()">
+
+        <select
+          aria-label="Filtrar por estrellas"
+          [(ngModel)]="filtro"
+          (ngModelChange)="reiniciarPagina()">
+
+          <option value="Todas">Todas las estrellas</option>
+          <option value="5">5 estrellas</option>
+          <option value="4">4 estrellas</option>
+          <option value="3">3 estrellas</option>
+          <option value="2">2 estrellas</option>
+          <option value="1">1 estrella</option>
+
+        </select>
+
+      </div>
+
+      <!-- SIN RESULTADOS -->
+
+      <div
+        class="vacio"
+        *ngIf="filtradas.length === 0">
+
+        <div class="vacio-icono">☆</div>
+
+        <h3>No encontramos reseñas</h3>
+
+        <p>
+          Todavía no hay comentarios con estos filtros.
+        </p>
+
+      </div>
+
+      <!-- ================================== -->
+      <!-- RESEÑAS PAGINADAS -->
+      <!-- ================================== -->
+
+      <article
+        class="resena"
+        *ngFor="let resena of paginadas">
+
+        <div class="resena-cabecera">
+
+          <div class="cliente">
+
+            <div class="avatar">
+              {{ resena.cliente.charAt(0) | uppercase }}
+            </div>
+
+            <div>
+              <strong>{{ resena.cliente }}</strong>
+
+              <small>
+                {{ resena.servicio }}
+                · {{ resena.fecha | date:'dd/MM/yyyy' }}
+              </small>
+            </div>
+
+          </div>
+
+          <span
+            class="estrellas"
+            [attr.aria-label]="resena.calificacion + ' de 5 estrellas'">
+
+            <span
+              *ngFor="let numero of [1,2,3,4,5]"
+              [class.apagada]="numero > resena.calificacion">
+              ★
+            </span>
+
+          </span>
+
+        </div>
+
+        <p class="comentario">
+          {{ resena.comentario }}
+        </p>
+
+        <!-- RESPUESTA PUBLICADA -->
+
+        <div
+          class="respuesta"
+          *ngIf="
+            resena.respuesta &&
+            editandoRespuestaId !== resena.id
+          ">
+
+          <strong>Respuesta del negocio</strong>
+
+          <p>{{ resena.respuesta }}</p>
+
+        </div>
+
+        <!-- EDITOR DE RESPUESTA -->
+
+        <div
+          class="editor-respuesta"
+          *ngIf="editandoRespuestaId === resena.id">
+
+          <label [for]="'respuesta-' + resena.id">
+            Tu respuesta
+          </label>
+
+          <textarea
+            [id]="'respuesta-' + resena.id"
+            [(ngModel)]="textoRespuesta"
+            rows="3"
+            maxlength="1000">
+          </textarea>
+
+          <div class="acciones">
+
+            <button
+              type="button"
+              class="boton-secundario"
+              (click)="cancelarRespuesta()">
+              Cancelar
+            </button>
+
+            <button
+              type="button"
+              class="boton-primario"
+              (click)="guardarRespuesta(resena)">
+              Guardar respuesta
+            </button>
+
+          </div>
+
+        </div>
+
+        <!-- BOTÓN RESPONDER -->
+
+        <button
+          type="button"
+          class="boton-secundario"
+          *ngIf="editandoRespuestaId !== resena.id"
+          (click)="responder(resena)">
+
+          {{ resena.respuesta
+            ? 'Editar respuesta'
+            : 'Responder' }}
+
+        </button>
+
+      </article>
+
+      <!-- ================================== -->
+      <!-- PAGINACIÓN -->
+      <!-- ================================== -->
+
+      <nav
+        class="paginacion"
+        *ngIf="totalPaginas > 1"
+        aria-label="Paginación de reseñas">
+
+        <span class="paginacion-info">
+          Mostrando
+          {{ inicioResultados }}–{{ finResultados }}
+          de {{ filtradas.length }} reseñas
+        </span>
+
+        <div class="paginas">
+
+          <button
+            type="button"
+            [disabled]="paginaActual === 1"
+            (click)="cambiarPagina(paginaActual - 1)">
+            Anterior
+          </button>
+
+          <button
+            type="button"
+            *ngFor="let pagina of paginas"
+            [class.activa]="paginaActual === pagina"
+            [attr.aria-current]="paginaActual === pagina ? 'page' : null"
+            (click)="cambiarPagina(pagina)">
+
+            {{ pagina }}
+
+          </button>
+
+          <button
+            type="button"
+            [disabled]="paginaActual === totalPaginas"
+            (click)="cambiarPagina(paginaActual + 1)">
+            Siguiente
+          </button>
+
+        </div>
+
+      </nav>
+
+    </div>
+
+  </ng-template>
+
+</section>

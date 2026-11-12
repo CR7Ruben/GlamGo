@@ -1,0 +1,515 @@
+
+$primary: #d4608a;
+$primary-dark: #c14b79;
+$border: #f0e3e9;
+$dark: #30212b;
+$muted: #917d88;
+
+:host {
+  display: block;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+// ==================================
+// CONTENEDOR PRINCIPAL
+// ==================================
+
+.feedback {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: $dark;
+}
+
+// ==================================
+// ENCABEZADO
+// ==================================
+
+.feedback-encabezado {
+  h2 {
+    margin: 5px 0 7px;
+    font-size: clamp(25px, 3vw, 32px);
+  }
+
+  p {
+    margin: 0;
+    color: $muted;
+    line-height: 1.6;
+  }
+
+  .etiqueta {
+    margin-bottom: 8px;
+    color: $primary-dark;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+  }
+}
+
+// ==================================
+// TARJETAS
+// ==================================
+
+.tarjeta {
+  padding: 23px;
+  border: 1px solid $border;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+// ==================================
+// ESTADÍSTICAS
+// ==================================
+
+.resumen {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.resumen-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  > span {
+    color: $muted;
+    font-size: 14px;
+  }
+
+  strong {
+    font-size: 32px;
+    color: $dark;
+  }
+
+  .estrella {
+    color: #e3ad46;
+    font-size: 25px;
+  }
+}
+
+// ==================================
+// LISTADO DE RESEÑAS
+// ==================================
+
+.listado-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  h3 {
+    margin: 0;
+    font-size: 22px;
+  }
+
+  p {
+    margin: 6px 0 0;
+    color: $muted;
+    font-size: 13px;
+  }
+
+  span {
+    color: $muted;
+    font-size: 13px;
+  }
+}
+
+// ==================================
+// FILTROS
+// ==================================
+
+.filtros {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid #eadbe2;
+  border-radius: 10px;
+  outline-color: $primary;
+  background: #fdfafb;
+  color: $dark;
+
+  &:focus {
+    border-color: $primary;
+  }
+}
+
+// ==================================
+// RESEÑAS
+// ==================================
+
+.resena {
+  padding: 21px 0;
+  border-top: 1px solid $border;
+}
+
+.resena-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cliente {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  > div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  strong {
+    font-size: 14px;
+  }
+
+  small {
+    color: $muted;
+    font-size: 12px;
+  }
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #f8e3ec;
+  color: $primary-dark;
+  font-weight: 700;
+}
+
+.estrellas {
+  color: #e3ad46;
+  font-size: 22px;
+  white-space: nowrap;
+
+  .apagada {
+    color: #e5dce1;
+  }
+}
+
+.comentario {
+  margin: 15px 0;
+  line-height: 1.65;
+  color: #67535e;
+  overflow-wrap: anywhere;
+}
+
+// ==================================
+// RESPUESTAS DEL NEGOCIO
+// ==================================
+
+.respuesta {
+  margin: 14px 0;
+  padding: 15px;
+  border-radius: 12px;
+  background: #fdf2f6;
+
+  strong {
+    color: $primary-dark;
+    font-size: 13px;
+  }
+
+  p {
+    margin: 6px 0 0;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+}
+
+.editor-respuesta {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 15px 0;
+
+  label {
+    font-weight: 700;
+    font-size: 13px;
+  }
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+// ==================================
+// BOTONES
+// ==================================
+
+.boton-primario,
+.boton-secundario {
+  padding: 10px 16px;
+  border-radius: 9px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.boton-primario {
+  border: 1px solid $primary-dark;
+  background: $primary-dark;
+  color: #ffffff;
+
+  &:hover {
+    background: $primary;
+    border-color: $primary;
+  }
+}
+
+.boton-secundario {
+  border: 1px solid #eadbe2;
+  background: #ffffff;
+  color: $primary-dark;
+
+  &:hover {
+    background: #fff0f6;
+  }
+}
+
+// ==================================
+// FORMULARIO DEL CLIENTE
+// ==================================
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 680px;
+
+  h3 {
+    margin: 0;
+    font-size: 23px;
+  }
+
+  p,
+  small {
+    margin: 0;
+    color: $muted;
+  }
+
+  label {
+    font-weight: 700;
+  }
+
+  .boton-primario {
+    align-self: flex-start;
+  }
+}
+
+.seleccionar {
+  display: flex;
+  gap: 5px;
+
+  button {
+    padding: 0 3px;
+    border: 0;
+    background: transparent;
+    color: #e5dce1;
+    font-size: 39px;
+    line-height: 1.2;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.12);
+    }
+
+    &.encendida {
+      color: #e3ad46;
+    }
+  }
+}
+
+// ==================================
+// MENSAJES
+// ==================================
+
+.mensaje {
+  margin: 0;
+  padding: 12px 15px;
+  border-radius: 10px;
+}
+
+.exito {
+  background: #e3f5eb;
+  color: #2d8658;
+}
+
+.error {
+  background: #fde8ed;
+  color: #b63c56;
+}
+
+// ==================================
+// ESTADO VACÍO
+// ==================================
+
+.vacio {
+  padding: 35px 10px;
+  color: $muted;
+  text-align: center;
+
+  h3 {
+    margin: 8px 0;
+    color: $dark;
+    font-size: 19px;
+  }
+
+  p {
+    font-size: 13px;
+  }
+}
+
+.vacio-icono {
+  color: $primary;
+  font-size: 45px;
+}
+
+// ==================================
+// PAGINACIÓN
+// ==================================
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  margin-top: 24px;
+  padding: 22px 0 0;
+  border-top: 1px solid $border;
+
+  .paginacion-info {
+    color: $muted;
+    font-size: 13px;
+    font-weight: 500;
+  }
+}
+
+.paginas {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 38px;
+    height: 38px;
+    padding: 0 13px;
+
+    border: 1px solid #f0dce5;
+    border-radius: 10px;
+
+    background: #ffffff;
+    color: $primary-dark;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.2s ease;
+
+    &:hover:not(:disabled):not(.activa) {
+      background: #fff0f6;
+      border-color: $primary;
+      transform: translateY(-1px);
+    }
+
+    &.activa {
+      background: $primary-dark;
+      border-color: $primary-dark;
+      color: #ffffff;
+      box-shadow: 0 3px 9px rgba(193, 75, 121, 0.16);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary;
+      outline-offset: 3px;
+    }
+  }
+}
+
+// ==================================
+// RESPONSIVE
+// ==================================
+
+@media (max-width: 650px) {
+
+  .resumen {
+    grid-template-columns: 1fr;
+  }
+
+  .filtros {
+    grid-template-columns: 1fr;
+  }
+
+  .tarjeta {
+    padding: 17px;
+  }
+
+  .paginacion {
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .paginas {
+    justify-content: center;
+    width: 100%;
+
+    button {
+      min-width: 35px;
+      height: 35px;
+      padding: 0 10px;
+      font-size: 12px;
+    }
+  }
+}

@@ -1,0 +1,878 @@
+<div class="page-container">
+    <div class="panel-card">
+
+        <!-- MENÚ LATERAL -->
+        <aside class="sidebar">
+            <a routerLink="/" class="logo">
+                Glam<span>Go</span>
+                <small>BUSINESS</small>
+            </a>
+
+            <div class="business-profile">
+                <div class="business-avatar">
+                    <img *ngIf="fotoNegocio; else inicialesSidebar" [src]="fotoNegocio" alt="Logo del negocio">
+                    <ng-template #inicialesSidebar>{{ inicialesNegocio }}</ng-template>
+                </div>
+                <h2>{{ nombreNegocio }}</h2>
+                <p>{{ tipoNegocio }}</p>
+            </div>
+
+            <p class="menu-label">ESPACIO DE TRABAJO</p>
+
+            <nav class="menu">
+                <button *ngFor="let item of menu" type="button" class="menu-item" [class.active]="seccion === item.id"
+                    (click)="irA(item.id)">
+                    <span class="menu-icon">{{ item.icono }}</span>
+                    {{ item.label }}
+                </button>
+            </nav>
+
+            <button type="button" class="menu-item logout" (click)="cerrarSesion()">
+                <span class="menu-icon">↩</span>
+                Cerrar sesión
+            </button>
+        </aside>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main">
+
+            <header class="page-header">
+                <div>
+                    <h1>{{ tituloSeccion }}</h1>
+                </div>
+
+                <div class="header-avatar">
+                    <img *ngIf="fotoNegocio; else inicialesHeader" [src]="fotoNegocio" alt="Logo del negocio">
+                    <ng-template #inicialesHeader>{{ inicialesNegocio }}</ng-template>
+                </div>
+            </header>
+
+            <!-- ========================= -->
+            <!-- DASHBOARD -->
+            <!-- ========================= -->
+            <ng-container *ngIf="seccion === 'dashboard'">
+
+                <div class="welcome-banner">
+                    <div>
+                        <span class="banner-label">
+                            TU ESPACIO DE ANÁLISIS
+                        </span>
+
+                        <h2>Haz crecer tu negocio <span class="sparkle">✦</span></h2>
+
+                        <p>
+                            Consulta tendencias, descubre tus servicios
+                            favoritos y toma mejores decisiones.
+                        </p>
+
+                        <button type="button" class="banner-btn" (click)="irA('citas')">
+                            Administrar citas →
+                        </button>
+                    </div>
+
+                    <div class="banner-decoration">✦</div>
+                </div>
+
+
+                <!-- INDICADORES -->
+                <div class="metrics-grid">
+
+                    <article class="metric">
+                        <div class="metric-top">
+                            <span class="metric-symbol ingresos">▦</span>
+                        </div>
+
+                        <span class="metric-label">Ingresos del mes</span>
+
+                        <strong>
+                            {{ ingresoMesDemo | currency:'MXN':'symbol':'1.0-0' }}
+                        </strong>
+
+                        <small>Datos de demostración</small>
+                    </article>
+
+                    <article class="metric">
+                        <div class="metric-top">
+                            <span class="metric-symbol confirmadas">✓</span>
+                        </div>
+
+                        <span class="metric-label">Citas confirmadas</span>
+
+                        <strong>{{ confirmadas }}</strong>
+
+                        <small>De {{ citas.length }} reservaciones</small>
+                    </article>
+
+                    <article class="metric">
+                        <div class="metric-top">
+                            <span class="metric-symbol tasa">◷</span>
+                        </div>
+
+                        <span class="metric-label">Tasa de confirmación</span>
+
+                        <strong>{{ tasaConfirmacion }}%</strong>
+
+                        <small>Sobre citas no canceladas</small>
+                    </article>
+
+                    <article class="metric">
+                        <div class="metric-top">
+                            <span class="metric-symbol ticket">×</span>
+                        </div>
+
+                        <span class="metric-label">Ticket promedio</span>
+
+                        <strong>
+                            {{ ticketPromedioDemo | currency:'MXN':'symbol':'1.0-0' }}
+                        </strong>
+
+                        <small>Datos de demostración</small>
+                    </article>
+
+                </div>
+
+
+                <!-- GRÁFICAS -->
+                <div class="charts-grid">
+
+                    <article class="chart-card chart-wide">
+                        <div class="chart-heading">
+                            <div>
+                                <h2>Ingresos mensuales</h2>
+                                <p>
+                                    Evolución de los ingresos del negocio.
+                                </p>
+                            </div>
+                            <span class="chart-tag">Últimos 6 meses</span>
+                        </div>
+
+                        <div class="chart-area">
+                            <canvas baseChart [type]="'bar'" [data]="graficaIngresos" [options]="opcionesGrafica">
+                            </canvas>
+                        </div>
+                    </article>
+
+                    <article class="chart-card">
+                        <div class="chart-heading">
+                            <div>
+                                <h2>Reservaciones por fecha</h2>
+                                <p>
+                                    Citas activas registradas.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="chart-area">
+                            <canvas baseChart [type]="'line'" [data]="graficaCitas" [options]="opcionesLinea">
+                            </canvas>
+                        </div>
+                    </article>
+
+                    <article class="chart-card">
+                        <div class="chart-heading">
+                            <div>
+                                <h2>Servicios más reservados</h2>
+                                <p>
+                                    Distribución de las reservaciones.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="chart-area">
+                            <canvas baseChart [type]="'doughnut'" [data]="graficaServicios" [options]="opcionesDona">
+                            </canvas>
+                        </div>
+                    </article>
+
+                </div>
+
+                <!-- ACTIVIDAD -->
+                <section class="content-section">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Actividad reciente</h2>
+                            <p>Consulta las últimas reservaciones.</p>
+                        </div>
+
+                        <button type="button" class="text-btn" (click)="irA('citas')">
+                            Ver todas →
+                        </button>
+                    </div>
+
+                    <div class="activity-item" *ngFor="let cita of actividadPaginada">
+
+                        <div class="activity-icon">◷</div>
+
+                        <div>
+                            <strong>{{ cita.cliente }}</strong>
+                            <p>
+                                {{ cita.servicio }} ·
+                                {{ cita.fecha | date:'dd/MM/yyyy':'UTC' }}
+                                · {{ cita.hora }}
+                            </p>
+                        </div>
+
+                        <span class="status" [ngClass]="cita.estado.toLowerCase()">
+                            {{ cita.estado }}
+                        </span>
+                    </div>
+                </section>
+
+                <nav class="listado-paginacion" *ngIf="totalPaginasActividad > 1" aria-label="Paginación de actividad">
+                    <span class="paginacion-info">Página {{ paginaActividad }} de {{ totalPaginasActividad }}</span>
+                    <div class="paginacion-controles">
+                        <button type="button" [disabled]="paginaActividad <= 1"
+                            (click)="cambiarPagina('actividad', paginaActividad - 1)">Anterior</button>
+                        <button type="button" *ngFor="let pagina of paginas(totalPaginasActividad)"
+                            [class.activa]="paginaActividad === pagina"
+                            [attr.aria-current]="paginaActividad === pagina ? 'page' : null"
+                            (click)="cambiarPagina('actividad', pagina)">{{ pagina }}</button>
+                        <button type="button" [disabled]="paginaActividad >= totalPaginasActividad"
+                            (click)="cambiarPagina('actividad', paginaActividad + 1)">Siguiente</button>
+                    </div>
+                </nav>
+
+                <p class="demo-note">
+                    Los ingresos y el ticket promedio son datos
+                    ilustrativos. Las reservaciones también son
+                    temporales hasta conectar la API.
+                </p>
+
+            </ng-container>
+
+            <!-- ========================= -->
+            <!-- GESTIÓN DE CITAS -->
+            <!-- ========================= -->
+            <ng-container *ngIf="seccion === 'citas'">
+
+                <div class="citas-intro">
+                    <div>
+                        <span class="citas-eyebrow">
+                            CONTROL DE RESERVACIONES
+                        </span>
+                        <h2>Organiza tus citas fácilmente</h2>
+                        <p>
+                            Consulta tus reservaciones, confirma las
+                            solicitudes de tus clientes y administra
+                            los horarios de atención.
+                        </p>
+                    </div>
+
+                    <div class="citas-intro-icon">◷</div>
+                </div>
+
+                <!-- RESUMEN DE CITAS -->
+                <div class="citas-resumen">
+
+                    <article class="cita-resumen-card">
+                        <div class="resumen-icon total">▦</div>
+                        <span>Total de citas</span>
+                        <strong>{{ citas.length }}</strong>
+                        <small>Reservaciones registradas</small>
+                    </article>
+
+                    <article class="cita-resumen-card">
+                        <div class="resumen-icon confirmadas">✓</div>
+                        <span>Confirmadas</span>
+                        <strong>{{ confirmadas }}</strong>
+                        <small>Citas aceptadas</small>
+                    </article>
+
+                    <article class="cita-resumen-card">
+                        <div class="resumen-icon pendientes">◷</div>
+                        <span>Pendientes</span>
+                        <strong>{{ pendientes }}</strong>
+                        <small>Esperando confirmación</small>
+                    </article>
+
+                    <article class="cita-resumen-card">
+                        <div class="resumen-icon canceladas">×</div>
+                        <span>Canceladas</span>
+                        <strong>{{ canceladas }}</strong>
+                        <small>Reservaciones canceladas</small>
+                    </article>
+
+                </div>
+
+                <!-- PANEL DE RESERVACIONES -->
+                <section class="citas-panel">
+
+                    <div class="citas-panel-heading">
+                        <div>
+                            <h2>Mis reservaciones</h2>
+                            <p>
+                                Busca y administra las citas de tu negocio.
+                            </p>
+                        </div>
+
+                        <span class="citas-count">
+                            {{ citasGestion.length }} resultados
+                        </span>
+                    </div>
+
+                    <!-- BUSCAR Y FILTRAR POR FECHA -->
+                    <div class="citas-filtros">
+
+                        <label class="citas-search">
+                            <span>⌕</span>
+                            <input type="search" placeholder="Buscar cliente o servicio..." [(ngModel)]="busquedaCitas"
+                                (ngModelChange)="reiniciarPaginacionCitas()">
+                        </label>
+
+                        <input type="date" class="citas-date" aria-label="Filtrar por fecha" [(ngModel)]="fechaCitas"
+                            (ngModelChange)="reiniciarPaginacionCitas()">
+
+                    </div>
+
+                    <!-- FILTROS POR ESTADO -->
+                    <div class="citas-tabs">
+
+                        <button type="button" [class.selected]="estadoFiltro === 'Todas'"
+                            (click)="estadoFiltro = 'Todas'; reiniciarPaginacionCitas()">
+                            Todas
+                        </button>
+
+                        <button type="button" [class.selected]="estadoFiltro === 'Pendiente'"
+                            (click)="estadoFiltro = 'Pendiente'; reiniciarPaginacionCitas()">
+                            Pendientes
+                        </button>
+
+                        <button type="button" [class.selected]="estadoFiltro === 'Confirmada'"
+                            (click)="estadoFiltro = 'Confirmada'; reiniciarPaginacionCitas()">
+                            Confirmadas
+                        </button>
+
+                        <button type="button" [class.selected]="estadoFiltro === 'Cancelada'"
+                            (click)="estadoFiltro = 'Cancelada'; reiniciarPaginacionCitas()">
+                            Canceladas
+                        </button>
+
+                        <button type="button" class="limpiar-citas" (click)="limpiarFiltrosCitas()">
+                            Limpiar filtros
+                        </button>
+
+                    </div>
+
+                    <!-- LISTADO DE CITAS -->
+                    <div class="citas-lista">
+
+                        <article class="cita-detalle-card" *ngFor="let cita of citasPaginadas">
+
+                            <div class="cita-detalle-header">
+
+                                <div class="cita-cliente">
+                                    <div class="cita-cliente-avatar">
+                                        {{ inicialesCliente(cita.cliente) }}
+                                    </div>
+
+                                    <div>
+                                        <h3>{{ cita.cliente }}</h3>
+                                        <p>Reservación #{{ cita.id }}</p>
+                                    </div>
+                                </div>
+
+                                <span class="status" [ngClass]="cita.estado.toLowerCase()">
+                                    {{ cita.estado }}
+                                </span>
+
+                            </div>
+
+                            <div class="cita-detalle-body">
+
+                                <div class="cita-dato">
+                                    <span class="dato-icono">✂</span>
+                                    <div>
+                                        <small>SERVICIO</small>
+                                        <strong>{{ cita.servicio }}</strong>
+                                    </div>
+                                </div>
+
+                                <div class="cita-dato">
+                                    <span class="dato-icono">▦</span>
+                                    <div>
+                                        <small>FECHA</small>
+                                        <strong>
+                                            {{ cita.fecha | date:'dd/MM/yyyy':'UTC' }}
+                                        </strong>
+                                    </div>
+                                </div>
+
+                                <div class="cita-dato">
+                                    <span class="dato-icono">◷</span>
+                                    <div>
+                                        <small>HORARIO</small>
+                                        <strong>{{ cita.hora }}</strong>
+                                    </div>
+                                </div>
+
+                                <div class="cita-dato">
+                                    <span class="dato-icono">⏱</span>
+                                    <div>
+                                        <small>DURACIÓN</small>
+                                        <strong>
+                                            <ng-container
+                                                *ngIf="duracionDeServicio(cita.servicio) as duracion; else sinDuracion">
+                                                {{ duracion }} minutos
+                                            </ng-container>
+
+                                            <ng-template #sinDuracion>
+                                                No disponible
+                                            </ng-template>
+                                        </strong>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="cita-detalle-footer">
+
+                                <div class="cita-precio">
+                                    <small>PRECIO DEL SERVICIO</small>
+                                    <strong>
+                                        <ng-container *ngIf="precioDeServicio(cita.servicio) as precio; else sinPrecio">
+                                            {{
+                                            precio |
+                                            currency:'MXN':'symbol':'1.0-0'
+                                            }}
+                                        </ng-container>
+
+                                        <ng-template #sinPrecio>
+                                            No disponible
+                                        </ng-template>
+                                    </strong>
+                                </div>
+
+                                <div class="cita-botones">
+
+                                    <button type="button" class="cita-confirmar" *ngIf="cita.estado === 'Pendiente'"
+                                        (click)="cambiarEstado(cita, 'Confirmada')">
+                                        ✓ Confirmar
+                                    </button>
+
+                                    <button type="button" class="cita-cancelar" *ngIf="cita.estado !== 'Cancelada'"
+                                        (click)="cambiarEstado(cita, 'Cancelada')">
+                                        × Cancelar
+                                    </button>
+
+                                    <span class="cita-finalizada" *ngIf="cita.estado === 'Cancelada'">
+                                        Reservación cancelada
+                                    </span>
+
+                                </div>
+
+                            </div>
+                        </article>
+
+                        <!-- SIN RESULTADOS -->
+                        <div class="citas-vacio" *ngIf="citasGestion.length === 0">
+
+                            <div class="vacio-icono">▦</div>
+                            <h3>No encontramos reservaciones</h3>
+                            <p>
+                                Prueba con otro nombre, fecha o estado.
+                            </p>
+
+                            <button type="button" class="secondary-btn" (click)="limpiarFiltrosCitas()">
+                                Mostrar todas las citas
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <nav class="listado-paginacion" *ngIf="totalPaginasCitas > 1" aria-label="Paginación de citas">
+                        <span class="paginacion-info">Página {{ paginaCitas }} de {{ totalPaginasCitas }}</span>
+                        <div class="paginacion-controles">
+                            <button type="button" [disabled]="paginaCitas <= 1"
+                                (click)="cambiarPagina('citas', paginaCitas - 1)">Anterior</button>
+                            <button type="button" *ngFor="let pagina of paginas(totalPaginasCitas)"
+                                [class.activa]="paginaCitas === pagina"
+                                [attr.aria-current]="paginaCitas === pagina ? 'page' : null"
+                                (click)="cambiarPagina('citas', pagina)">{{ pagina }}</button>
+                            <button type="button" [disabled]="paginaCitas >= totalPaginasCitas"
+                                (click)="cambiarPagina('citas', paginaCitas + 1)">Siguiente</button>
+                        </div>
+                    </nav>
+
+                </section>
+            </ng-container>
+
+            <!-- ========================= -->
+            <!-- SERVICIOS -->
+            <!-- ========================= -->
+            <section class="servicios-section" *ngIf="seccion === 'servicios'">
+
+                <div class="servicios-heading">
+                    <div>
+                        <span class="servicios-eyebrow">
+                            TU CATÁLOGO
+                        </span>
+                        <h2>Servicios de {{ nombreNegocio }}</h2>
+                        <p>
+                            Personaliza los servicios, precios y
+                            fotografías que verán tus clientes.
+                        </p>
+                    </div>
+
+                    <span class="servicios-total">
+                        {{ servicios.length }} servicios
+                    </span>
+                </div>
+
+                <!-- FORMULARIO -->
+                <div class="servicios-form-card" id="formulario-servicios">
+
+                    <div class="servicios-form-header">
+                        <h3>
+                            {{
+                            editandoServicioId !== null
+                            ? 'Editar servicio'
+                            : 'Agregar nuevo servicio'
+                            }}
+                        </h3>
+
+                        <p>
+                            Completa la información del servicio.
+                        </p>
+                    </div>
+
+                    <form class="servicios-form" (ngSubmit)="agregarServicio()">
+
+                        <div class="servicios-form-grid">
+
+                            <div class="servicio-field">
+                                <label for="nombreServicio">
+                                    Nombre del servicio
+                                </label>
+
+                                <input id="nombreServicio" name="nombre" type="text" placeholder="Ej. Corte de cabello"
+                                    [(ngModel)]="nuevoServicio" required>
+                            </div>
+
+                            <div class="servicio-field">
+                                <label for="precioServicio">
+                                    Precio (MXN)
+                                </label>
+
+                                <input id="precioServicio" name="precio" type="number" min="1" placeholder="Ej. 180"
+                                    [(ngModel)]="nuevoPrecio" required>
+                            </div>
+
+                            <div class="servicio-field">
+                                <label for="duracionServicio">
+                                    Duración (minutos)
+                                </label>
+
+                                <input id="duracionServicio" name="duracion" type="number" min="1" placeholder="Ej. 40"
+                                    [(ngModel)]="nuevaDuracion" required>
+                            </div>
+
+                        </div>
+
+                        <!-- FOTOGRAFÍA DE REFERENCIA -->
+                        <div class="servicio-imagen-field">
+                            <label>Fotografía de referencia</label>
+
+                            <div class="servicio-upload">
+
+                                <div class="servicio-imagen-preview" *ngIf="imagenServicio; else sinImagen">
+
+                                    <img [src]="imagenServicio" alt="Vista previa de la fotografía">
+
+                                    <button type="button" class="quitar-imagen" (click)="quitarImagenServicio()">
+                                        Quitar imagen
+                                    </button>
+                                </div>
+
+                                <ng-template #sinImagen>
+                                    <div class="servicio-upload-placeholder">
+                                        <span>▧</span>
+                                        <strong>Agrega una fotografía</strong>
+                                        <small>
+                                            JPG, PNG o WEBP · Máximo 2 MB
+                                        </small>
+                                    </div>
+                                </ng-template>
+
+                                <label class="servicio-upload-btn" for="fotoServicio">
+                                    + Seleccionar fotografía
+                                </label>
+
+                                <input id="fotoServicio" type="file" accept="image/jpeg,image/png,image/webp"
+                                    (change)="subirImagenServicio($event)" hidden>
+                            </div>
+
+                            <p class="servicio-imagen-error" *ngIf="errorImagen">
+                                {{ errorImagen }}
+                            </p>
+                        </div>
+
+                        <!-- GUARDAR / CANCELAR -->
+                        <div class="servicios-form-actions">
+
+                            <button type="button" class="servicio-cancel-btn" *ngIf="editandoServicioId !== null"
+                                (click)="cancelarEdicion()">
+                                Cancelar edición
+                            </button>
+
+                            <button type="submit" class="servicio-guardar-btn">
+                                {{
+                                editandoServicioId !== null
+                                ? 'Guardar cambios'
+                                : '+ Agregar servicio'
+                                }}
+                            </button>
+
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- CATÁLOGO DE SERVICIOS -->
+                <div class="servicios-catalogo-heading">
+                    <h3>Servicios publicados</h3>
+                    <p>
+                        Selecciona un servicio para editarlo.
+                    </p>
+                </div>
+
+                <div class="servicios-grid">
+
+                    <article class="servicio-card" *ngFor="let servicio of serviciosPaginados">
+
+                        <div class="servicio-card-imagen">
+
+                            <img *ngIf="servicio.imagen; else imagenVacia" [src]="servicio.imagen"
+                                [alt]="servicio.nombre">
+
+                            <ng-template #imagenVacia>
+                                <div class="servicio-card-placeholder">
+                                    <span>✂</span>
+                                    <small>Sin fotografía</small>
+                                </div>
+                            </ng-template>
+
+                        </div>
+
+                        <div class="servicio-card-content">
+
+                            <h3>{{ servicio.nombre }}</h3>
+
+                            <p class="servicio-card-duracion">
+                                ◷ {{ servicio.duracion }} minutos
+                            </p>
+
+                            <strong class="servicio-card-precio">
+                                {{
+                                servicio.precio |
+                                currency:'MXN':'symbol':'1.0-0'
+                                }}
+                            </strong>
+
+                            <div class="servicio-card-actions">
+
+                                <button type="button" class="servicio-editar-btn" (click)="editarServicio(servicio)">
+                                    ✎ Editar
+                                </button>
+
+                                <button type="button" class="servicio-eliminar-btn"
+                                    (click)="eliminarServicio(servicio.id)">
+                                    Eliminar
+                                </button>
+
+                            </div>
+
+                        </div>
+                    </article>
+
+                </div>
+
+                <nav class="listado-paginacion" *ngIf="totalPaginasServicios > 1" aria-label="Paginación de servicios">
+                    <span class="paginacion-info">Página {{ paginaServicios }} de {{ totalPaginasServicios }}</span>
+                    <div class="paginacion-controles">
+                        <button type="button" [disabled]="paginaServicios <= 1"
+                            (click)="cambiarPagina('servicios', paginaServicios - 1)">Anterior</button>
+                        <button type="button" *ngFor="let pagina of paginas(totalPaginasServicios)"
+                            [class.activa]="paginaServicios === pagina"
+                            [attr.aria-current]="paginaServicios === pagina ? 'page' : null"
+                            (click)="cambiarPagina('servicios', pagina)">{{ pagina }}</button>
+                        <button type="button" [disabled]="paginaServicios >= totalPaginasServicios"
+                            (click)="cambiarPagina('servicios', paginaServicios + 1)">Siguiente</button>
+                    </div>
+                </nav>
+
+                <div class="servicios-empty" *ngIf="servicios.length === 0">
+                    <h3>Todavía no tienes servicios</h3>
+                    <p>
+                        Agrega tu primer servicio para comenzar.
+                    </p>
+                </div>
+
+            </section>
+
+            <!-- SECCIÓN FEEDBACK -->
+            <section *ngIf="seccion === 'feedback'">
+                <app-feedback modo="negocio" negocioId="barber-zone" [nombreNegocio]="nombreNegocio">
+                </app-feedback>
+            </section>
+
+            <!-- ========================= -->
+            <!-- MI PERFIL -->
+            <!-- ========================= -->
+            <section class="perfil-section" *ngIf="seccion === 'perfil'">
+
+                <div class="perfil-portada">
+                    <img *ngIf="portadaNegocio" [src]="portadaNegocio" class="perfil-portada-imagen"
+                        alt="Portada del negocio">
+                    <div class="perfil-portada-overlay"></div>
+                    <label class="perfil-cambiar-portada">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z" />
+                            <circle cx="12" cy="13" r="3" />
+                        </svg>
+                        Cambiar portada
+                        <input type="file" accept="image/jpeg,image/png,image/webp"
+                            (change)="cambiarImagenPerfil($event, 'portada')" hidden>
+                    </label>
+                </div>
+
+                <div class="perfil-identidad">
+                    <div class="perfil-foto-contenedor">
+                        <div class="perfil-foto">
+                            <img *ngIf="fotoNegocio; else inicialesPerfil" [src]="fotoNegocio" alt="Foto del negocio">
+                            <ng-template #inicialesPerfil>
+                                <span>{{ inicialesNegocio }}</span>
+                            </ng-template>
+                        </div>
+                        <label class="perfil-foto-editar" title="Cambiar fotografía">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z" />
+                                <circle cx="12" cy="13" r="3" />
+                            </svg>
+
+                            <input type="file" accept="image/jpeg,image/png,image/webp"
+                                (change)="cambiarImagenPerfil($event, 'foto')" hidden>
+                        </label>
+                    </div>
+
+                    <div class="perfil-identidad-info">
+                        <h2>{{ nombreNegocio }}</h2>
+                        <p>{{ tipoNegocio }}</p>
+                        <span class="perfil-estado">● Perfil de negocio</span>
+                    </div>
+
+                    <button type="button" class="perfil-btn-editar" *ngIf="!editandoPerfil" (click)="editarPerfil()">
+                        ✎ Editar perfil
+                    </button>
+                </div>
+
+                <div class="perfil-estadisticas">
+                    <article class="perfil-stat">
+                        <span>✂</span><strong>{{ servicios.length }}</strong><small>Servicios</small>
+                    </article>
+                    <article class="perfil-stat">
+                        <span>◷</span><strong>{{ citas.length }}</strong><small>Citas registradas</small>
+                    </article>
+                    <article class="perfil-stat">
+                        <span>✓</span><strong>{{ confirmadas }}</strong><small>Confirmadas</small>
+                    </article>
+                </div>
+
+                <p class="perfil-mensaje" role="status" *ngIf="mensajePerfil">{{ mensajePerfil }}</p>
+                <p class="perfil-error" role="alert" *ngIf="errorPerfil">{{ errorPerfil }}</p>
+
+                <div class="perfil-card">
+                    <div class="perfil-card-header">
+                        <h3>Información del negocio</h3>
+                        <p>Administra los datos que describen tu establecimiento.</p>
+                    </div>
+
+                    <div *ngIf="!editandoPerfil" class="perfil-datos-grid">
+                        <div class="perfil-dato">
+                            <label>Nombre comercial</label><strong>{{ nombreNegocio }}</strong>
+                        </div>
+                        <div class="perfil-dato">
+                            <label>Categoría</label><strong>{{ tipoNegocio }}</strong>
+                        </div>
+                        <div class="perfil-dato">
+                            <label>Correo electrónico</label>
+                            <strong>{{ auth.usuario?.email || 'Sin registrar' }}</strong>
+                        </div>
+                        <div class="perfil-dato">
+                            <label>Teléfono</label><strong>{{ telefonoNegocio || 'Sin registrar' }}</strong>
+                        </div>
+                        <div class="perfil-dato perfil-dato-completo">
+                            <label>Dirección</label><strong>{{ direccionNegocio || 'Sin registrar' }}</strong>
+                        </div>
+                        <div class="perfil-dato perfil-dato-completo">
+                            <label>Descripción del negocio</label>
+                            <p>{{ descripcionNegocio || 'Agrega una descripción para presentar tu negocio a tus
+                                clientes.' }}</p>
+                        </div>
+                    </div>
+
+                    <form *ngIf="editandoPerfil" class="perfil-formulario" (ngSubmit)="guardarPerfil()">
+                        <div class="perfil-datos-grid">
+                            <div class="perfil-campo">
+                                <label for="perfilNombre">Nombre comercial</label>
+                                <input id="perfilNombre" name="perfilNombre" type="text" required maxlength="80"
+                                    [(ngModel)]="perfilFormulario.nombre">
+                            </div>
+                            <div class="perfil-campo">
+                                <label for="perfilTipo">Categoría</label>
+                                <input id="perfilTipo" name="perfilTipo" type="text" required maxlength="60"
+                                    [(ngModel)]="perfilFormulario.tipo">
+                            </div>
+                            <div class="perfil-campo">
+                                <label for="perfilCorreo">Correo electrónico</label>
+                                <input id="perfilCorreo" type="email" [value]="auth.usuario?.email || ''" disabled>
+                            </div>
+                            <div class="perfil-campo">
+                                <label for="perfilTelefono">Teléfono</label>
+                                <input id="perfilTelefono" name="perfilTelefono" type="tel" maxlength="20"
+                                    [(ngModel)]="perfilFormulario.telefono" placeholder="Ej. 6441234567">
+                            </div>
+                            <div class="perfil-campo perfil-dato-completo">
+                                <label for="perfilDireccion">Dirección</label>
+                                <input id="perfilDireccion" name="perfilDireccion" type="text" maxlength="200"
+                                    [(ngModel)]="perfilFormulario.direccion"
+                                    placeholder="Calle, número, colonia y ciudad">
+                            </div>
+                            <div class="perfil-campo perfil-dato-completo">
+                                <label for="perfilDescripcion">Descripción del negocio</label>
+                                <textarea id="perfilDescripcion" name="perfilDescripcion" rows="4" maxlength="500"
+                                    [(ngModel)]="perfilFormulario.descripcion"
+                                    placeholder="Cuéntales a tus clientes qué hace especial a tu negocio..."></textarea>
+                            </div>
+                        </div>
+                        <div class="perfil-form-acciones">
+                            <button type="button" class="perfil-btn-cancelar"
+                                (click)="cancelarEdicionPerfil()">Cancelar</button>
+                            <button type="submit" class="perfil-btn-guardar">Guardar cambios</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="perfil-card">
+                    <div class="perfil-card-header">
+                        <h3>Mi cuenta</h3>
+                        <p>Información de acceso a GlamGo Business.</p>
+                    </div>
+                    <div class="perfil-cuenta">
+                        <div class="perfil-cuenta-icono">♙</div>
+                        <div class="perfil-cuenta-datos">
+                            <strong>{{ auth.usuario?.nombre || 'Propietario' }}</strong>
+                            <p>{{ auth.usuario?.email || 'Sin correo disponible' }}</p>
+                        </div>
+                        <span class="perfil-cuenta-badge">Propietario</span>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
