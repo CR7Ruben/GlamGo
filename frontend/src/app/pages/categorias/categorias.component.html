@@ -1,0 +1,128 @@
+<div class="page-container">
+  <div class="landing-card">
+
+    <app-navbar></app-navbar>
+
+    <main class="content">
+
+      <!-- Encabezado -->
+      <section class="page-header">
+        <h1 class="page-title">
+          Explora por <span class="pink-text">categoría</span>
+        </h1>
+        <p class="page-subtitle">
+          Encuentra el servicio de belleza que buscas y reserva en un solo lugar.
+        </p>
+
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" name="busqueda" placeholder="Buscar categoría o servicio..."
+            [(ngModel)]="busqueda">
+          <button type="button" class="clear-btn" *ngIf="busqueda" (click)="busqueda = ''"
+            aria-label="Borrar búsqueda">✕</button>
+        </div>
+      </section>
+
+      <!-- Filtros -->
+      <div class="chips">
+        <button type="button" class="chip" *ngFor="let g of grupos"
+          [class.active]="g === grupoActivo" (click)="setGrupo(g)">
+          {{ g }}
+        </button>
+      </div>
+
+      <!-- Cuadrícula -->
+      <section class="grid" *ngIf="filtradas.length > 0">
+        <button type="button" class="card" *ngFor="let c of filtradas; trackBy: trackById"
+          (click)="seleccionar(c)">
+                    <span class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round">
+              <ng-container [ngSwitch]="c.icono">
+
+                <ng-container *ngSwitchCase="'tijeras'">
+                  <circle cx="6" cy="6" r="3"></circle>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
+                  <line x1="14.47" y1="14.48" x2="20" y2="20"></line>
+                  <line x1="8.12" y1="8.12" x2="12" y2="12"></line>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'gota'">
+                  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'destellos'">
+                  <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path>
+                  <path d="M19 16v4"></path>
+                  <path d="M17 18h4"></path>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'frasco'">
+                  <rect x="7" y="11" width="10" height="10" rx="2"></rect>
+                  <rect x="10" y="3" width="4" height="8" rx="1"></rect>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'hoja'">
+                  <path d="M5 19c0-9 6-14 14-14 0 8-5 14-14 14z"></path>
+                  <line x1="5" y1="19" x2="13" y2="11"></line>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'gema'">
+                  <path d="M6 3h12l4 6-10 13L2 9z"></path>
+                  <path d="M11 3L8 9l4 13 4-13-3-6"></path>
+                  <path d="M2 9h20"></path>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'labial'">
+                  <rect x="8" y="12" width="8" height="9" rx="1"></rect>
+                  <path d="M9.5 12V7l5-3v8"></path>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'rostro'">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                  <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                  <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'ojo'">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'corazon'">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'rayo'">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'luna'">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </ng-container>
+
+              </ng-container>
+            </svg>
+          </span>
+          <span class="card-name">{{ c.nombre }}</span>
+          <span class="card-desc">{{ c.descripcion }}</span>
+          <span class="card-count">{{ c.servicios }} servicios</span>
+        </button>
+      </section>
+
+      <!-- Sin resultados -->
+      <section class="empty" *ngIf="filtradas.length === 0">
+        <p class="empty-title">No encontramos categorías</p>
+        <p class="empty-text">Prueba con otra palabra o cambia el filtro.</p>
+        <button type="button" class="btn-clear" (click)="limpiar()">Ver todas</button>
+      </section>
+
+    </main>
+  </div>
+</div>

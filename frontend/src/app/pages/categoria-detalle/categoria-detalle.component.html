@@ -1,0 +1,69 @@
+<div class="page-container">
+  <div class="landing-card">
+
+    <app-navbar></app-navbar>
+
+    <main class="content">
+
+      <a routerLink="/categorias" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Todas las categorías
+      </a>
+
+      <ng-container *ngIf="categoria">
+
+        <!-- Encabezado -->
+        <section class="page-header">
+          <span class="badge">{{ categoria.grupo }}</span>
+          <h1 class="page-title">{{ categoria.nombre }}</h1>
+          <p class="page-subtitle">{{ categoria.descripcionLarga }}</p>
+          <p class="count">{{ disenos.length }} diseños disponibles</p>
+        </section>
+
+        <!-- Diseños -->
+        <section class="grid">
+          <article class="design" *ngFor="let d of disenos; trackBy: trackById">
+
+            <div class="thumb" [ngClass]="'tone-' + d.tono">
+              <img *ngIf="d.imagen; else placeholder" [src]="d.imagen" [alt]="d.nombre">
+              <ng-template #placeholder>
+                <svg class="sparkle" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0 C12.8 7.5 16.5 11.2 24 12 C16.5 12.8 12.8 16.5 12 24 C11.2 16.5 7.5 12.8 0 12 C7.5 11.2 11.2 7.5 12 0Z"></path>
+                </svg>
+              </ng-template>
+            </div>
+
+            <div class="info">
+              <h3 class="design-name">{{ d.nombre }}</h3>
+              <p class="design-desc">{{ d.descripcion }}</p>
+
+              <div class="meta">
+                <span class="price">Desde {{ d.precio | currency:'MXN':'symbol-narrow':'1.0-0' }}</span>
+                <span class="time">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  {{ d.duracion }}
+                </span>
+              </div>
+            </div>
+          </article>
+        </section>
+
+      </ng-container>
+
+      <!-- Categoría inexistente -->
+      <section class="empty" *ngIf="noEncontrada">
+        <p class="empty-title">No encontramos esta categoría</p>
+        <a routerLink="/categorias" class="btn-reserve link">Ver todas las categorías</a>
+      </section>
+
+    </main>
+  </div>
+</div>

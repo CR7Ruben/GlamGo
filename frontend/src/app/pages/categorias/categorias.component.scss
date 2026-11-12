@@ -1,0 +1,330 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700&display=swap');
+
+$bg-card: #fdf0f4;
+$bg-white: rgba(255, 255, 255, 0.75);
+$primary-pink: #d4608a;
+$primary-pink-dark: #c14b79;
+$text-dark: #2a1d24;
+$text-muted: #7a6b72;
+$border-soft: #ecd5df;
+$input-bg: #fbeef3;
+
+$font-main: 'Roboto Condensed', 'Roboto', 'Segoe UI', sans-serif;
+
+:host {
+    display: block;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+.page-container {
+    background: linear-gradient(135deg, #f9dbe7 0%, #f3c4d7 100%);
+    height: 100vh;
+    height: 100dvh;
+    padding: clamp(0.6rem, 1.4vh, 1.5rem);
+    box-sizing: border-box;
+    font-family: $font-main;
+    overflow: hidden;
+}
+
+.landing-card {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: $bg-card;
+    border-radius: clamp(14px, 1.6vw, 26px);
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(212, 96, 138, 0.15);
+}
+
+/* Contenido: el scroll es interno, la navbar siempre queda arriba */
+.content {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    background: linear-gradient(135deg, #fde7ef 0%, #f9d3e2 100%);
+    padding: clamp(1.5rem, 4vh, 3rem) clamp(1.5rem, 4vw, 5rem) clamp(1.5rem, 4vh, 3rem);
+
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba(212, 96, 138, 0.35);
+        border-radius: 8px;
+    }
+}
+
+/* Encabezado */
+.page-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto clamp(1rem, 3vh, 2rem);
+
+    .page-title {
+        font-size: clamp(2rem, min(3.6vw, 6.5vh), 3.8rem);
+        line-height: 1.1;
+        font-weight: 700;
+        color: $text-dark;
+        margin: 0 0 0.7rem;
+
+        .pink-text {
+            color: $primary-pink;
+        }
+    }
+
+    .page-subtitle {
+        font-size: clamp(1rem, 1.3vw, 1.3rem);
+        font-weight: 500;
+        color: $text-dark;
+        margin: 0 0 clamp(1rem, 2.5vh, 1.6rem);
+    }
+}
+
+/* Buscador */
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: #ffffff;
+    border: 1px solid $border-soft;
+    border-radius: 14px;
+    padding: clamp(0.7rem, 1.6vh, 1rem) 1.1rem;
+    box-shadow: 0 6px 20px rgba(212, 96, 138, 0.08);
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &:focus-within {
+        border-color: $primary-pink;
+        box-shadow: 0 0 0 3px rgba(212, 96, 138, 0.15);
+    }
+
+    svg {
+        width: 22px;
+        height: 22px;
+        flex-shrink: 0;
+        color: $primary-pink;
+    }
+
+    input {
+        flex: 1;
+        min-width: 0;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-family: $font-main;
+        font-size: clamp(1rem, 1.2vw, 1.2rem);
+        color: $text-dark;
+
+        &::placeholder {
+            color: #a8979f;
+        }
+    }
+
+    .clear-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: $text-muted;
+        font-size: 1rem;
+        padding: 0.2rem;
+
+        &:hover {
+            color: $primary-pink;
+        }
+    }
+}
+
+/* Chips */
+.chips {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-bottom: clamp(1.2rem, 3vh, 2rem);
+
+    .chip {
+        border: 1px solid $border-soft;
+        background: #ffffff;
+        color: $text-dark;
+        font-family: $font-main;
+        font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+        font-weight: 700;
+        padding: 0.5rem 1.3rem;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+            border-color: $primary-pink;
+            color: $primary-pink;
+        }
+
+        &.active {
+            background: linear-gradient(135deg, #dc6c95 0%, $primary-pink-dark 100%);
+            border-color: transparent;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(212, 96, 138, 0.3);
+        }
+    }
+}
+
+/* Cuadrícula */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(clamp(190px, 17vw, 260px), 1fr));
+    gap: clamp(0.9rem, 1.6vw, 1.5rem);
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid transparent;
+    border-radius: 18px;
+    padding: clamp(1.1rem, 2.4vh, 1.8rem) 1rem;
+    font-family: $font-main;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(212, 96, 138, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+
+    &:hover {
+        transform: translateY(-4px);
+        border-color: $primary-pink;
+        box-shadow: 0 12px 30px rgba(212, 96, 138, 0.2);
+    }
+
+    .card-icon {
+        width: clamp(52px, 4.4vw, 70px);
+        height: clamp(52px, 4.4vw, 70px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: $input-bg;
+        border-radius: 50%;
+        margin-bottom: 0.3rem;
+        color: $primary-pink;
+        transition: background 0.2s, color 0.2s;
+
+        svg {
+            width: 48%;
+            height: 48%;
+        }
+    }
+
+    &:hover .card-icon {
+        background: $primary-pink;
+        color: #ffffff;
+    }
+
+    .card-name {
+        font-size: clamp(1.05rem, 1.3vw, 1.3rem);
+        font-weight: 700;
+        color: $text-dark;
+    }
+
+    .card-desc {
+        font-size: clamp(0.9rem, 1vw, 1rem);
+        color: $text-muted;
+        line-height: 1.3;
+    }
+
+    .card-count {
+        margin-top: 0.4rem;
+        font-size: clamp(0.85rem, 0.95vw, 0.95rem);
+        font-weight: 700;
+        color: $primary-pink-dark;
+        background: $input-bg;
+        padding: 0.25rem 0.8rem;
+        border-radius: 999px;
+    }
+}
+
+/* Sin resultados */
+.empty {
+    text-align: center;
+    padding: 2rem 0;
+
+    .empty-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: $text-dark;
+        margin: 0 0 0.3rem;
+    }
+
+    .empty-text {
+        color: $text-muted;
+        margin: 0 0 1.2rem;
+    }
+
+    .btn-clear {
+        border: none;
+        border-radius: 12px;
+        padding: 0.7rem 1.6rem;
+        font-family: $font-main;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #fff;
+        background: linear-gradient(135deg, #dc6c95 0%, $primary-pink-dark 100%);
+        box-shadow: 0 4px 12px rgba(212, 96, 138, 0.3);
+        cursor: pointer;
+
+        &:hover {
+            filter: brightness(0.95);
+        }
+    }
+}
+
+/* Tablet y móvil: scroll normal de la página */
+@media (max-width: 820px) {
+
+    :host,
+    .page-container {
+        height: auto;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow: visible;
+    }
+
+    .landing-card {
+        height: auto;
+    }
+
+    .content {
+        overflow: visible;
+        padding: 1.5rem 1.2rem 2rem;
+    }
+
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Celulares chicos */
+@media (max-width: 480px) {
+    .page-container {
+        padding: 0.5rem;
+    }
+
+    .content {
+        padding: 1.2rem 0.9rem 1.6rem;
+    }
+
+    .grid {
+        gap: 0.7rem;
+    }
+
+    .card {
+        padding: 1rem 0.6rem;
+
+        .card-desc {
+            display: none;
+        }
+    }
+}
