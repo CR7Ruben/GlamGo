@@ -6,6 +6,7 @@ import { CategoriaDetalleComponent } from './pages/categoria-detalle/categoria-d
 import { ComoFuncionaComponent } from './pages/como-funciona/como-funciona.component';
 import { authGuard } from './guards/auth.guard';
 import { PanelNegocioComponent } from './pages/panel-negocio/panel-negocio.component';
+import { LegalComponent } from './pages/legal/legal.component';
 
 export const routes: Routes = [
   {
@@ -26,6 +27,12 @@ export const routes: Routes = [
   },
   { path: 'panel-negocio', 
     component: PanelNegocioComponent, canActivate: [authGuard] 
+  },
+  { path: 'terminos',  
+    component: LegalComponent, data: { tipo: 'terminos' } 
+  },
+  { path: 'privacidad', 
+    component: LegalComponent, data: { tipo: 'privacidad' } 
   },
   {
     path: '**',

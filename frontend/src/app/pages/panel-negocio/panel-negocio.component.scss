@@ -1646,13 +1646,14 @@ button {
 
 @media (max-width: 850px) {
   .panel-card {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);   
   }
 
   .sidebar {
     padding: 18px;
+    min-width: 0;
   }
-
+  
   .business-profile,
   .menu-label {
     display: none;
@@ -1910,12 +1911,6 @@ button {
 // INDICADORES DASHBOARD - ÍCONOS SUPERIORES
 // ========================================
 
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
-}
-
 .metric {
   display: flex;
   flex-direction: column;
@@ -1997,5 +1992,10 @@ button {
 @media (max-width: 600px) {
   .metrics-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .metric {
+    padding: 16px;
   }
 }

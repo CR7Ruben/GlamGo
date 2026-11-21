@@ -134,7 +134,9 @@
                 <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
               </svg>
               <input id="password" name="password" [type]="showPassword ? 'text' : 'password'"
-                placeholder="Ingresa tu contraseña" [(ngModel)]="password" required>
+                [placeholder]="mode === 'register' ? 'Crea tu contraseña' : 'Ingresa tu contraseña'"
+                [attr.maxlength]="mode === 'register' ? 20 : null"
+                [(ngModel)]="password" required>
               <button type="button" class="eye-btn" (click)="togglePassword()" aria-label="Mostrar contraseña">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
                   stroke-linejoin="round">
@@ -145,12 +147,36 @@
             </div>
           </div>
 
-          <!-- Recordarme / olvidé (solo login) -->
+          <!-- Requisitos de la contraseña (solo registro) -->
+          <div class="pw-rules" *ngIf="mode === 'register'" [class.ok]="passwordValida" aria-live="polite">
+            <div class="pw-head">
+              <span class="pw-title">Tu contraseña debe incluir</span>
+              <span class="pw-count" [class.done]="passwordValida">
+                {{ reglasCumplidas }}/{{ reglasPassword.length }}
+              </span>
+            </div>
+
+            <div class="pw-bar">
+              <span *ngFor="let r of reglasPassword; let i = index" [class.on]="i < reglasCumplidas"></span>
+            </div>
+
+            <ul class="pw-list">
+              <li *ngFor="let r of reglasPassword" [class.ok]="r.ok">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                {{ r.texto }}
+              </li>
+            </ul>
+          </div>
+
+          <!-- Recordar correo / olvidé (solo login) -->
           <div class="row-options" *ngIf="mode === 'login'">
             <label class="check">
               <input type="checkbox" name="remember" [(ngModel)]="remember">
               <span class="box"></span>
-              Recuérdame
+              Recordar mi correo
             </label>
             <a href="#" class="forgot">¿Olvidaste la contraseña?</a>
           </div>
@@ -164,8 +190,9 @@
           </button>
 
           <p class="terms" *ngIf="mode === 'register'">
-            Al crear tu cuenta aceptas los <a href="#">Términos de uso</a> y la
-            <a href="#">Política de privacidad</a>.
+            Al crear tu cuenta aceptas los
+            <a routerLink="/terminos" target="_blank">Términos de uso</a> y la
+            <a routerLink="/privacidad" target="_blank">Política de privacidad</a>.
           </p>
         </form>
 

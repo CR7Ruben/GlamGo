@@ -22,27 +22,43 @@ export class AuthComponent implements OnInit {
   password = '';
   remember = false;
 
+  /** Reglas de la contraseña (solo se exigen al crear cuenta). */
+  private readonly reglas: { texto: string; cumple: (p: string) => boolean }[] = [
+    { texto: 'De 6 a 20 caracteres', cumple: p => p.length >= 6 && p.length <= 20 },
+    { texto: 'Una mayúscula',        cumple: p => /\p{Lu}/u.test(p) },
+    { texto: 'Una minúscula',        cumple: p => /\p{Ll}/u.test(p) },
+    { texto: 'Un número',            cumple: p => /\d/.test(p) },
+    { texto: 'Un carácter especial', cumple: p => /[^\p{L}\d\s]/u.test(p) }
+  ];
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private auth: AuthService
   ) {}
 
+  /** Estado de cada regla según lo que se va escribiendo. */
+  get reglasPassword(): { texto: string; ok: boolean }[] {
+    return this.reglas.map(r => ({ texto: r.texto, ok: r.cumple(this.password) }));
+  }
+
+  get reglasCumplidas(): number {
+    return this.reglasPassword.filter(r => r.ok).length;
+  }
+
+  get passwordValida(): boolean {
+    return this.reglas.every(r => r.cumple(this.password));
+  }
+
   ngOnInit(): void {
     // Permitir abrir login o registro aunque exista una sesión
     this.route.queryParams.subscribe(params => {
-      this.mode = params['mode'] === 'register'
-        ? 'register'
-        : 'login';
-
-      this.error = '';
+      this.aplicarModo(params['mode'] === 'register' ? 'register' : 'login');
     });
   }
 
   setMode(mode: 'login' | 'register'): void {
-    this.mode = mode;
-    this.showPassword = false;
-    this.error = '';
+    this.aplicarModo(mode);
   }
 
   togglePassword(): void {
@@ -62,13 +78,40 @@ export class AuthComponent implements OnInit {
       return;
     }
 
+    if (this.mode === 'register' && !this.passwordValida) {
+      this.error = 'La contraseña no cumple con todos los requisitos.';
+      return;
+    }
+
     // Autenticación simulada
     this.auth.login(
       this.email,
-      this.mode === 'register' ? this.nombre : undefined
+      this.mode === 'register' ? this.nombre : undefined,
+      this.mode === 'login' && this.remember
     );
 
     // Redirigir al panel del negocio
     this.router.navigate(['/panel-negocio']);
+  }
+
+  /** Ajusta el formulario según la pestaña. El correo recordado solo se usa en el login. */
+  private aplicarModo(mode: 'login' | 'register'): void {
+    this.mode = mode;
+    this.showPassword = false;
+    this.error = '';
+
+    const recordado = this.auth.emailRecordado;
+
+    if (mode === 'login') {
+      if (!this.email.trim()) {
+        this.email = recordado;
+      }
+      this.remember = recordado !== '';
+    } else {
+      if (this.email === recordado) {
+        this.email = '';          // no mostrar el correo recordado al registrarse
+      }
+      this.remember = false;
+    }
   }
 }

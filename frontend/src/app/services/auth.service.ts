@@ -8,6 +8,7 @@ export interface Usuario {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly KEY = 'glamgo_usuario';
+  private readonly KEY_EMAIL = 'glamgo_email_recordado';
 
   get usuario(): Usuario | null {
     try {
@@ -22,14 +23,30 @@ export class AuthService {
     return this.usuario !== null;
   }
 
+  /** Correo guardado con "Recordar mi correo". */
+  get emailRecordado(): string {
+    try {
+      return localStorage.getItem(this.KEY_EMAIL) ?? '';
+    } catch {
+      return '';
+    }
+  }
+
   /** Login simulado. Luego se reemplaza por la llamada a tu API (JWT). */
-  login(email: string, nombre?: string): void {
+  login(email: string, nombre?: string, recordarCorreo = false): void {
     const usuario: Usuario = {
       nombre: nombre?.trim() || this.nombreDesdeCorreo(email),
       email: email.trim()
     };
+
     try {
       localStorage.setItem(this.KEY, JSON.stringify(usuario));
+
+      if (recordarCorreo) {
+        localStorage.setItem(this.KEY_EMAIL, usuario.email);
+      } else {
+        localStorage.removeItem(this.KEY_EMAIL);
+      }
     } catch {
       /* sin almacenamiento disponible */
     }
@@ -37,7 +54,7 @@ export class AuthService {
 
   logout(): void {
     try {
-      localStorage.removeItem(this.KEY);
+      localStorage.removeItem(this.KEY);   // el correo recordado se conserva
     } catch {
       /* nada */
     }

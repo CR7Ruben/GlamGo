@@ -7,6 +7,7 @@ $text-dark: #2a1d24;
 $text-muted: #7a6b72;
 $border-soft: #ecd5df;
 $input-bg: #fbeef3;
+$success: #2d8658;
 
 $font-main: 'Roboto Condensed', 'Roboto', 'Segoe UI', sans-serif;
 $font-logo: 'Playfair Display', Georgia, serif;
@@ -290,7 +291,120 @@ $font-logo: 'Playfair Display', Georgia, serif;
   }
 }
 
-/* Recordarme / olvidé */
+/* ---------- Requisitos de la contraseña ---------- */
+.pw-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid $border-soft;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fffafc 0%, #fcf0f5 100%);
+  font-family: $font-main;
+
+  .pw-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+  }
+
+  .pw-title {
+    font-size: clamp(0.88rem, 1.05vw, 1rem);
+    font-weight: 700;
+    color: $text-dark;
+  }
+
+  .pw-count {
+    min-width: 2.6rem;
+    padding: 0.12rem 0.65rem;
+    border-radius: 999px;
+    background: #f8e3ec;
+    color: $primary-pink-dark;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-align: center;
+    transition: background 0.25s, color 0.25s;
+
+    &.done {
+      background: #e3f5eb;
+      color: $success;
+    }
+  }
+
+  /* Barra de progreso: 5 segmentos, uno por requisito */
+  .pw-bar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+
+    span {
+      height: 6px;
+      border-radius: 999px;
+      background: #efdde5;
+      transition: background 0.3s;
+
+      &.on {
+        background: linear-gradient(90deg, #dc6c95, $primary-pink-dark);
+      }
+    }
+  }
+
+  &.ok .pw-bar span.on {
+    background: $success;
+  }
+
+  /* Chips de requisitos */
+  .pw-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.8rem 0.25rem 0.35rem;
+      border: 1px solid $border-soft;
+      border-radius: 999px;
+      background: #ffffff;
+      color: $text-muted;
+      font-size: clamp(0.82rem, 0.98vw, 0.95rem);
+      font-weight: 500;
+      line-height: 1.2;
+      transition: background 0.25s, border-color 0.25s, color 0.25s;
+
+      svg {
+        flex-shrink: 0;
+        width: 18px;
+        height: 18px;
+        padding: 3px;
+        box-sizing: border-box;
+        border-radius: 50%;
+        background: #f0e4ea;
+        color: transparent;
+        transition: background 0.25s, color 0.25s;
+      }
+
+      &.ok {
+        border-color: #bfe3cf;
+        background: #eef9f2;
+        color: $success;
+        font-weight: 600;
+
+        svg {
+          background: $success;
+          color: #ffffff;
+        }
+      }
+    }
+  }
+}
+
+/* Recordar correo / olvidé */
 .row-options {
   display: flex;
   align-items: center;
@@ -427,6 +541,16 @@ $font-logo: 'Playfair Display', Georgia, serif;
   }
 }
 
+.form-error {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fde2e8;
+  color: #b3304f;
+  font-size: 14px;
+  font-weight: 700;
+}
+
 /* Pantallas bajas: se permite scroll y se ocultan los beneficios */
 @media (max-height: 760px) {
   .benefits {
@@ -483,14 +607,4 @@ $font-logo: 'Playfair Display', Georgia, serif;
   .form-panel {
     padding: 4.5rem 1rem 2rem;   /* espacio arriba para el botón de volver */
   }
-}
-
-.form-error {
-  margin: 0;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: #fde2e8;
-  color: #b3304f;
-  font-size: 14px;
-  font-weight: 700;
 }
