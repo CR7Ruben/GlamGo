@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -59,7 +59,6 @@ export class PanelNegocioComponent {
     direccion: '',
     descripcion: ''
   };
-
 
   // Filtros de citas
   busquedaCitas = '';
@@ -256,7 +255,8 @@ export class PanelNegocioComponent {
 
   constructor(
     public auth: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   get inicialesNegocio(): string {
@@ -291,10 +291,7 @@ export class PanelNegocioComponent {
     this.paginaActividad = 1;
   }
 
-  // ================================
-  // GESTIÓN DE CITAS
-  // ================================
-
+  // Gestión de citas
   get citasGestion(): Cita[] {
     const busqueda = this.busquedaCitas
       .trim()
@@ -370,10 +367,7 @@ export class PanelNegocioComponent {
     )?.duracion ?? null;
   }
 
-  // ================================
-  // DASHBOARD
-  // ================================
-
+  // Dashboard
   get ingresoMesDemo(): number {
     return this.ingresosMensuales.at(-1) ?? 0;
   }
@@ -447,10 +441,7 @@ export class PanelNegocioComponent {
     };
   }
 
-  // ================================
-  // GESTIÓN DE SERVICIOS
-  // ================================
-
+  // Gestión de servicios
   agregarServicio(): void {
     const nombre = this.nuevoServicio.trim();
     const precio = Number(this.nuevoPrecio);
@@ -534,10 +525,12 @@ export class PanelNegocioComponent {
 
     lector.onload = () => {
       this.imagenServicio = lector.result as string;
+      this.cdr.markForCheck();
     };
 
     lector.onerror = () => {
       this.errorImagen = 'No se pudo leer la imagen.';
+      this.cdr.markForCheck();
     };
 
     lector.readAsDataURL(archivo);
@@ -568,10 +561,7 @@ export class PanelNegocioComponent {
     this.paginaServicios = Math.min(this.paginaServicios, Math.max(1, this.totalPaginasServicios));
   }
 
-  // ================================
-  // PERFIL DEL NEGOCIO
-  // ================================
-
+  // Perfil del negocio
   editarPerfil(): void {
     this.perfilFormulario = {
       nombre: this.nombreNegocio,
@@ -635,9 +625,11 @@ export class PanelNegocioComponent {
         this.portadaNegocio = lector.result;
       }
       this.mensajePerfil = 'Imagen actualizada correctamente.';
+      this.cdr.markForCheck();
     };
     lector.onerror = () => {
       this.errorPerfil = 'No se pudo leer la imagen.';
+      this.cdr.markForCheck();
     };
     lector.readAsDataURL(archivo);
     input.value = '';
