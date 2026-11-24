@@ -155,7 +155,7 @@ button {
   }
 
   &.logout {
-    margin-top: 20px;
+    margin-top: 0;
     color: #ae5572;
   }
 }
@@ -2019,3 +2019,22 @@ button {
 @keyframes toastProgreso { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 @media (max-width: 480px) { .toast-servicio { bottom: 16px; right: 16px; left: 16px; width: auto; padding: 16px; gap: 10px; } .toast-icon { width: 40px; height: 40px; } }
 @media (prefers-reduced-motion: reduce) { .toast-servicio, .toast-progress { animation: none; } }
+
+// Menú hamburguesa responsive
+.mobile-toolbar { display: none; }
+@media (max-width: 850px) {
+  .panel-card { display: flex; flex-direction: column; }
+  .mobile-toolbar { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: #fff; border-bottom: 1px solid $border; }
+  .mobile-toolbar .logo { padding: 0; font-size: 25px; }
+  .mobile-toolbar .logo small { font-size: 9px; margin-top: 2px; }
+  .mobile-menu-toggle { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border: 0; border-radius: 12px; background: #f8e3ec; color: $primary-dark; }
+  .mobile-menu-toggle:focus-visible { outline: 2px solid $primary-dark; outline-offset: 3px; }
+  .sidebar { display: none; border-right: 0; border-bottom: 1px solid $border; }
+  .sidebar.menu-movil-abierto { display: flex; }
+  .sidebar > .logo { display: none; }
+  .sidebar .menu-label { display: block; }
+  .sidebar .menu { flex-direction: column; overflow: visible; padding: 0; }
+  .sidebar .menu-item { width: 100%; white-space: normal; }
+  .sidebar .menu-item.logout { margin-top: 0; }
+  .main { flex: 1; }
+}

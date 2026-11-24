@@ -1,8 +1,20 @@
 <div class="page-container">
     <div class="panel-card">
 
+        <!-- Menú móvil -->
+        <div class="mobile-toolbar">
+            <button type="button" class="mobile-menu-toggle" (click)="menuMovilAbierto = !menuMovilAbierto"
+                [attr.aria-expanded]="menuMovilAbierto" aria-controls="menu-negocio"
+                [attr.aria-label]="menuMovilAbierto ? 'Cerrar menú' : 'Abrir menú'">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <path [attr.d]="menuMovilAbierto ? 'M6 6l12 12M18 6L6 18' : 'M4 6h16M4 12h16M4 18h16'" />
+                </svg>
+            </button>
+            <a routerLink="/" class="logo">Glam<span>Go</span><small>BUSINESS</small></a>
+        </div>
+
         <!-- Menú lateral -->
-        <aside class="sidebar">
+        <aside id="menu-negocio" class="sidebar" [class.menu-movil-abierto]="menuMovilAbierto">
             <a routerLink="/" class="logo">
                 Glam<span>Go</span>
                 <small>BUSINESS</small>
@@ -19,7 +31,7 @@
             <p class="menu-label">ESPACIO DE TRABAJO</p>
             <nav class="menu">
                 <button *ngFor="let item of menu" type="button" class="menu-item" [class.active]="seccion === item.id"
-                    (click)="irA(item.id)">
+                    (click)="irA(item.id); menuMovilAbierto = false">
                     <span class="menu-icon" style="display: inline-flex; align-items: center; justify-content: center;" aria-hidden="true">
                         <svg *ngIf="item.id === 'perfil'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="8" r="4" />
@@ -33,12 +45,12 @@
                     </span>
                     {{ item.label }}
                 </button>
+                <br>
+                <button type="button" class="menu-item logout" (click)="menuMovilAbierto = false; cerrarSesion()">
+                    <span class="menu-icon">↩</span>
+                    Cerrar sesión
+                </button>
             </nav>
-
-            <button type="button" class="menu-item logout" (click)="cerrarSesion()">
-                <span class="menu-icon">↩</span>
-                Cerrar sesión
-            </button>
         </aside>
 
         <!-- Contenido principal -->

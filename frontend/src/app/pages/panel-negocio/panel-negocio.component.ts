@@ -134,6 +134,7 @@ export class PanelNegocioComponent implements OnInit, OnDestroy {
   }
 
   seccion: Seccion = 'dashboard';
+  menuMovilAbierto = false;
 
   nombreNegocio = 'Barber Zone';
   tipoNegocio = 'Barbería';
@@ -724,10 +725,10 @@ export class PanelNegocioComponent implements OnInit, OnDestroy {
   }
 
   cerrarSesion(): void {
-  sessionStorage.removeItem(
-    `glamgo_seccion_${this.cuenta}`
-  );
-  this.auth.logout();
-  this.router.navigate(['/']);
-}
+    sessionStorage.removeItem(
+      `glamgo_seccion_${this.cuenta}`
+    );
+    this.auth.logout();
+    this.router.navigate(['/']);
+  }
 }
