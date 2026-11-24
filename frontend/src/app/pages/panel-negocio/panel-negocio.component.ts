@@ -53,13 +53,36 @@ export class PanelNegocioComponent implements OnInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     this.cuenta = this.auth.usuario?.email.trim().toLowerCase() ?? '';
+
+    // Recuperar la última sección visitada
+    const seccionGuardada = sessionStorage.getItem(
+      `glamgo_seccion_${this.cuenta}`
+    );
+    const seccionesValidas: Seccion[] = [
+      'dashboard',
+      'citas',
+      'servicios',
+      'feedback',
+      'perfil'
+    ];
+    if (
+      seccionGuardada &&
+      seccionesValidas.includes(seccionGuardada as Seccion)
+    ) {
+      this.seccion = seccionGuardada as Seccion;
+    }
     try {
       if (!this.cuenta) throw new Error('Sin usuario');
-      this.servicios = await this.offline.leer<Servicio>(this.cuenta) ?? [];
+
+      this.servicios =
+        await this.offline.leer<Servicio>(this.cuenta) ?? [];
+
       this.serviciosListos = true;
     } catch {
       this.errorServicio = 'No se pudo abrir el almacenamiento local.';
-    } finally { this.cdr.markForCheck(); }
+    } finally {
+      this.cdr.markForCheck();
+    }
   }
 
   ngOnDestroy(): void {
@@ -90,8 +113,23 @@ export class PanelNegocioComponent implements OnInit, OnDestroy {
   @HostListener('window:online')
   @HostListener('window:offline')
   actualizarConexion(): void {
+    const estabaSinConexion = !this.enLinea;
+
     this.enLinea = navigator.onLine;
-    // La API aún no está conectada: conservar los pendientes.
+
+    if (estabaSinConexion && this.enLinea) {
+      const pendientes = this.servicios.filter(
+        servicio => servicio.pendiente
+      );
+
+      if (pendientes.length > 0) {
+        this.mostrarToast(
+          '¡Conexión recuperada!',
+          'Se ha recuperado la conexión a internet y tu servicio se ha guardado exitosamente. '
+        );
+      }
+    }
+
     this.cdr.markForCheck();
   }
 
@@ -186,12 +224,12 @@ export class PanelNegocioComponent implements OnInit, OnDestroy {
     label: string;
     icono: string;
   }[] = [
-    { id: 'dashboard', label: 'Dashboard', icono: '▦' },
-    { id: 'citas', label: 'Citas', icono: '◷' },
-    { id: 'servicios', label: 'Servicios', icono: '✂' },
-    { id: 'feedback', label: 'Feedback', icono: '★' },
-    { id: 'perfil', label: 'Mi perfil', icono: '♙' }
-  ];
+      { id: 'dashboard', label: 'Dashboard', icono: '▦' },
+      { id: 'citas', label: 'Citas', icono: '◷' },
+      { id: 'servicios', label: 'Servicios', icono: '✂' },
+      { id: 'feedback', label: 'Feedback', icono: '★' },
+      { id: 'perfil', label: 'Mi perfil', icono: '♙' }
+    ];
 
   // Citas de demostración
   citas: Cita[] = [
@@ -293,7 +331,7 @@ export class PanelNegocioComponent implements OnInit, OnDestroy {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private offline: ServiciosOfflineService
-  ) {}
+  ) { }
 
   get inicialesNegocio(): string {
     return this.inicialesCliente(this.nombreNegocio);
@@ -322,6 +360,12 @@ export class PanelNegocioComponent implements OnInit, OnDestroy {
 
   irA(seccion: Seccion): void {
     this.seccion = seccion;
+
+    // Guardar la sección seleccionada
+    sessionStorage.setItem(
+      `glamgo_seccion_${this.cuenta}`,
+      seccion
+    );
     this.paginaCitas = 1;
     this.paginaServicios = 1;
     this.paginaActividad = 1;
@@ -485,7 +529,7 @@ export class PanelNegocioComponent implements OnInit, OnDestroy {
     const precio = Number(this.nuevoPrecio);
     const duracion = Number(this.nuevaDuracion);
     if (!nombre || !Number.isFinite(precio) || precio <= 0 ||
-        !Number.isInteger(duracion) || duracion <= 0 || !this.imagenServicio) {
+      !Number.isInteger(duracion) || duracion <= 0 || !this.imagenServicio) {
       this.errorServicio = 'Completa el nombre, precio, duración y fotografía.';
       return;
     }
@@ -600,7 +644,7 @@ export class PanelNegocioComponent implements OnInit, OnDestroy {
       this.servicios = siguientes;
       if (this.editandoServicioId === id) this.cancelarEdicion();
       this.paginaServicios = Math.min(this.paginaServicios, Math.max(1, this.totalPaginasServicios));
-      this.mostrarToast('¡Servicio eliminado!', 'El servicio se eliminó del dispositivo.', false);
+      this.mostrarToast('¡Servicio eliminado!', 'El servicio ya no forma parte de tus servicios activos.', false);
     } catch { this.errorServicio = 'No se pudo eliminar el servicio.'; }
     finally { this.guardandoServicio = false; this.cdr.markForCheck(); }
   }
@@ -680,7 +724,10 @@ export class PanelNegocioComponent implements OnInit, OnDestroy {
   }
 
   cerrarSesion(): void {
-    this.auth.logout();
-    this.router.navigate(['/']);
-  }
+  sessionStorage.removeItem(
+    `glamgo_seccion_${this.cuenta}`
+  );
+  this.auth.logout();
+  this.router.navigate(['/']);
+}
 }

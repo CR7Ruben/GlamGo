@@ -20,7 +20,17 @@
             <nav class="menu">
                 <button *ngFor="let item of menu" type="button" class="menu-item" [class.active]="seccion === item.id"
                     (click)="irA(item.id)">
-                    <span class="menu-icon">{{ item.icono }}</span>
+                    <span class="menu-icon" style="display: inline-flex; align-items: center; justify-content: center;" aria-hidden="true">
+                        <svg *ngIf="item.id === 'perfil'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="8" r="4" />
+                            <path d="M4 21v-2a8 8 0 0 1 16 0v2" />
+                        </svg>
+                        <svg *ngIf="item.id === 'feedback'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H4l2-4a8.5 8.5 0 1 1 15-4.5Z" />
+                            <path d="M9 10h6M9 14h4" />
+                        </svg>
+                        <ng-container *ngIf="item.id !== 'perfil' && item.id !== 'feedback'">{{ item.icono }}</ng-container>
+                    </span>
                     {{ item.label }}
                 </button>
             </nav>
