@@ -1,9 +1,10 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
+import { ServiciosOfflineService } from '../../services/servicios-offline.service';
 import { AuthService } from '../../services/auth.service';
 import { FeedbackComponent } from '../../components/feedback/feedback.component';
 Chart.register(...registerables);
@@ -27,6 +28,8 @@ interface Servicio {
   precio: number;
   duracion: number;
   imagen: string | null;
+  localId?: string;
+  pendiente?: boolean;
 }
 
 @Component({
@@ -36,7 +39,62 @@ interface Servicio {
   templateUrl: './panel-negocio.component.html',
   styleUrl: './panel-negocio.component.scss'
 })
-export class PanelNegocioComponent {
+export class PanelNegocioComponent implements OnInit, OnDestroy {
+  enLinea = navigator.onLine;
+  guardandoServicio = false;
+  serviciosListos = false;
+  mensajeServicio = '';
+  errorServicio = '';
+  tituloToast = '';
+  mostrarPendiente = false;
+  private toastTimer: ReturnType<typeof setTimeout> | null = null;
+  private cuenta = '';
+  private activo = true;
+
+  async ngOnInit(): Promise<void> {
+    this.cuenta = this.auth.usuario?.email.trim().toLowerCase() ?? '';
+    try {
+      if (!this.cuenta) throw new Error('Sin usuario');
+      this.servicios = await this.offline.leer<Servicio>(this.cuenta) ?? [];
+      this.serviciosListos = true;
+    } catch {
+      this.errorServicio = 'No se pudo abrir el almacenamiento local.';
+    } finally { this.cdr.markForCheck(); }
+  }
+
+  ngOnDestroy(): void {
+    this.activo = false;
+    if (this.toastTimer !== null) clearTimeout(this.toastTimer);
+  }
+
+  cerrarToast(): void {
+    if (this.toastTimer !== null) clearTimeout(this.toastTimer);
+    this.toastTimer = null;
+    this.mensajeServicio = '';
+    this.errorServicio = '';
+    this.tituloToast = '';
+    this.mostrarPendiente = false;
+    this.cdr.markForCheck();
+  }
+
+  mostrarToast(titulo: string, mensaje: string, pendiente = true): void {
+    if (!this.activo) return;
+    this.cerrarToast();
+    this.tituloToast = titulo;
+    this.mensajeServicio = mensaje;
+    this.mostrarPendiente = pendiente;
+    this.toastTimer = setTimeout(() => this.cerrarToast(), 5000);
+    this.cdr.markForCheck();
+  }
+
+  @HostListener('window:online')
+  @HostListener('window:offline')
+  actualizarConexion(): void {
+    this.enLinea = navigator.onLine;
+    // La API aún no está conectada: conservar los pendientes.
+    this.cdr.markForCheck();
+  }
+
   seccion: Seccion = 'dashboard';
 
   nombreNegocio = 'Barber Zone';
@@ -65,8 +123,8 @@ export class PanelNegocioComponent {
   estadoFiltro: FiltroEstado = 'Todas';
   fechaCitas = '';
 
-  // Paginación de listados (5 elementos por página)
-  readonly elementosPorPagina = 5;
+  // Paginación de listados (6 elementos por página)
+  readonly elementosPorPagina = 6;
   paginaCitas = 1;
   paginaServicios = 1;
   paginaActividad = 1;
@@ -171,30 +229,7 @@ export class PanelNegocioComponent {
     }
   ];
 
-  // Servicios de demostración
-  servicios: Servicio[] = [
-    {
-      id: 1,
-      nombre: 'Corte de cabello',
-      precio: 180,
-      duracion: 40,
-      imagen: null
-    },
-    {
-      id: 2,
-      nombre: 'Arreglo de barba',
-      precio: 100,
-      duracion: 25,
-      imagen: null
-    },
-    {
-      id: 3,
-      nombre: 'Corte y barba',
-      precio: 250,
-      duracion: 60,
-      imagen: null
-    }
-  ];
+  servicios: Servicio[] = [];
 
   readonly meses = ['Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov'];
   readonly ingresosMensuales = [
@@ -256,7 +291,8 @@ export class PanelNegocioComponent {
   constructor(
     public auth: AuthService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private offline: ServiciosOfflineService
   ) {}
 
   get inicialesNegocio(): string {
@@ -442,45 +478,48 @@ export class PanelNegocioComponent {
   }
 
   // Gestión de servicios
-  agregarServicio(): void {
+  async agregarServicio(): Promise<void> {
+    if (!this.serviciosListos || this.guardandoServicio) return;
+    this.cerrarToast();
     const nombre = this.nuevoServicio.trim();
     const precio = Number(this.nuevoPrecio);
     const duracion = Number(this.nuevaDuracion);
-
-    if (
-      !nombre ||
-      this.nuevoPrecio === null ||
-      this.nuevaDuracion === null ||
-      !Number.isFinite(precio) ||
-      !Number.isFinite(duracion) ||
-      precio <= 0 ||
-      duracion <= 0
-    ) {
+    if (!nombre || !Number.isFinite(precio) || precio <= 0 ||
+        !Number.isInteger(duracion) || duracion <= 0 || !this.imagenServicio) {
+      this.errorServicio = 'Completa el nombre, precio, duración y fotografía.';
       return;
     }
-
-    if (this.editandoServicioId !== null) {
-      const servicio = this.servicios.find(
-        s => s.id === this.editandoServicioId
-      );
-
-      if (!servicio) return;
-
-      servicio.nombre = nombre;
-      servicio.precio = precio;
-      servicio.duracion = duracion;
-      servicio.imagen = this.imagenServicio;
-    } else {
-      this.servicios.push({
-        id: Math.max(0, ...this.servicios.map(s => s.id)) + 1,
-        nombre,
-        precio,
-        duracion,
-        imagen: this.imagenServicio
-      });
-    }
-
-    this.cancelarEdicion();
+    const anterior = this.servicios.find(s => s.id === this.editandoServicioId);
+    const servicio: Servicio = {
+      id: anterior?.id ?? Math.max(0, ...this.servicios.map(s => s.id)) + 1,
+      localId: anterior?.localId ?? crypto.randomUUID(),
+      nombre, precio, duracion, imagen: this.imagenServicio, pendiente: true
+    };
+    const siguientes = anterior ? this.servicios.map(s => s.id === anterior.id ? servicio : s)
+      : [...this.servicios, servicio];
+    this.guardandoServicio = true;
+    try {
+      await this.offline.guardar(this.cuenta, siguientes);
+      if (!this.activo) return;
+      this.servicios = siguientes;
+      this.paginaServicios = anterior ? this.paginaServicios : Math.max(1, this.totalPaginasServicios);
+      this.cancelarEdicion();
+      if (this.enLinea) {
+        this.mostrarToast(
+          anterior ? '¡Servicio actualizado correctamente!' : '¡Servicio agregado correctamente!',
+          'Tu servicio se ha guardado exitosamente.',
+          false
+        );
+      } else {
+        this.mostrarToast(
+          anterior ? '¡Servicio actualizado sin conexión!' : '¡Servicio guardado sin conexión!',
+          'Tu servicio se guardó en este dispositivo. Se sincronizará cuando recuperes la conexión a internet.',
+          true
+        );
+      }
+    } catch {
+      this.errorServicio = 'No se pudo guardar el servicio. Revisa el espacio disponible e inténtalo nuevamente.';
+    } finally { this.guardandoServicio = false; this.cdr.markForCheck(); }
   }
 
   editarServicio(servicio: Servicio): void {
@@ -550,15 +589,20 @@ export class PanelNegocioComponent {
     this.errorImagen = '';
   }
 
-  eliminarServicio(id: number): void {
-    if (this.editandoServicioId === id) {
-      this.cancelarEdicion();
-    }
-
-    this.servicios = this.servicios.filter(
-      servicio => servicio.id !== id
-    );
-    this.paginaServicios = Math.min(this.paginaServicios, Math.max(1, this.totalPaginasServicios));
+  async eliminarServicio(id: number): Promise<void> {
+    if (!this.serviciosListos || this.guardandoServicio) return;
+    this.guardandoServicio = true;
+    this.cerrarToast();
+    const siguientes = this.servicios.filter(s => s.id !== id);
+    try {
+      await this.offline.guardar(this.cuenta, siguientes);
+      if (!this.activo) return;
+      this.servicios = siguientes;
+      if (this.editandoServicioId === id) this.cancelarEdicion();
+      this.paginaServicios = Math.min(this.paginaServicios, Math.max(1, this.totalPaginasServicios));
+      this.mostrarToast('¡Servicio eliminado!', 'El servicio se eliminó del dispositivo.', false);
+    } catch { this.errorServicio = 'No se pudo eliminar el servicio.'; }
+    finally { this.guardandoServicio = false; this.cdr.markForCheck(); }
   }
 
   // Perfil del negocio

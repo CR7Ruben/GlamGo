@@ -453,6 +453,29 @@
                     </span>
                 </div>
 
+                <div class="conexion-wrapper">
+                    <div class="conexion-servicios" [class.sin-conexion]="!enLinea" role="status"
+                         [attr.title]="enLinea ? 'Red disponible; API aún no conectada' : 'Guardado local disponible'">
+                        <span class="conexion-dot"></span>{{ enLinea ? 'En línea' : 'Sin conexión' }}
+                    </div>
+                </div>
+                <div class="toast-servicio" *ngIf="mensajeServicio || errorServicio"
+                     [class.toast-error]="errorServicio" [class.toast-offline]="!enLinea && !errorServicio" role="alert">
+                    <div class="toast-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path *ngIf="!errorServicio" d="m8 12 3 3 5-6"/>
+                            <path *ngIf="errorServicio" d="M12 7v6 M12 16h.01"/>
+                        </svg>
+                    </div>
+                    <div class="toast-content">
+                        <h4>{{ errorServicio ? 'Algo salió mal' : tituloToast }}</h4>
+                        <p>{{ errorServicio || mensajeServicio }}</p>
+                        <span class="toast-pendiente" *ngIf="!errorServicio && mostrarPendiente">Pendiente de sincronización</span>
+                    </div>
+                    <button class="toast-close" type="button" aria-label="Cerrar notificación" (click)="cerrarToast()">&times;</button>
+                    <div class="toast-progress" *ngIf="!errorServicio"></div>
+                </div>
                 <!-- Formulario de servicios -->
                 <div class="servicios-form-card" id="formulario-servicios">
                     <div class="servicios-form-header">
@@ -536,7 +559,7 @@
                                 Cancelar edición
                             </button>
 
-                            <button type="submit" class="servicio-guardar-btn">
+                            <button type="submit" class="servicio-guardar-btn" [disabled]="guardandoServicio || !serviciosListos">
                                 {{
                                 editandoServicioId !== null
                                 ? 'Guardar cambios'
@@ -549,7 +572,7 @@
 
                 <!-- Catálogo de servicios -->
                 <div class="servicios-catalogo-heading">
-                    <h3>Servicios publicados</h3>
+                    <h3>Servicios guardados</h3>
                     <p>
                         Selecciona un servicio para editarlo.
                     </p>
@@ -569,6 +592,7 @@
                         </div>
                         <div class="servicio-card-content">
                             <h3>{{ servicio.nombre }}</h3>
+                            <small class="pendiente-servicio" *ngIf="servicio.pendiente">Pendiente de sincronizar</small>
                             <p class="servicio-card-duracion">
                                 ◷ {{ servicio.duracion }} minutos
                             </p>
@@ -579,10 +603,10 @@
                                 }}
                             </strong>
                             <div class="servicio-card-actions">
-                                <button type="button" class="servicio-editar-btn" (click)="editarServicio(servicio)">
+                                <button type="button" class="servicio-editar-btn" [disabled]="guardandoServicio || !serviciosListos" (click)="editarServicio(servicio)">
                                     ✎ Editar
                                 </button>
-                                <button type="button" class="servicio-eliminar-btn"
+                                <button type="button" class="servicio-eliminar-btn" [disabled]="guardandoServicio || !serviciosListos"
                                     (click)="eliminarServicio(servicio.id)">
                                     Eliminar
                                 </button>
