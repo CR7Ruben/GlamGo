@@ -135,8 +135,7 @@
               </svg>
               <input id="password" name="password" [type]="showPassword ? 'text' : 'password'"
                 [placeholder]="mode === 'register' ? 'Crea tu contraseña' : 'Ingresa tu contraseña'"
-                [attr.maxlength]="mode === 'register' ? 20 : null"
-                [(ngModel)]="password" required>
+                [attr.maxlength]="mode === 'register' ? 20 : null" [(ngModel)]="password" required>
               <button type="button" class="eye-btn" (click)="togglePassword()" aria-label="Mostrar contraseña">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
                   stroke-linejoin="round">
@@ -147,7 +146,7 @@
             </div>
           </div>
 
-          <!-- Requisitos de la contraseña (solo registro) -->
+          <!-- Requisitos de la contraseña (solo registro) 
           <div class="pw-rules" *ngIf="mode === 'register'" [class.ok]="passwordValida" aria-live="polite">
             <div class="pw-head">
               <span class="pw-title">Tu contraseña debe incluir</span>
@@ -158,6 +157,32 @@
 
             <div class="pw-bar">
               <span *ngFor="let r of reglasPassword; let i = index" [class.on]="i < reglasCumplidas"></span>
+            </div>
+
+            <ul class="pw-list">
+              <li *ngFor="let r of reglasPassword" [class.ok]="r.ok">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                {{ r.texto }}
+              </li>
+            </ul>
+          </div> 
+        -->
+
+          <!-- Requisitos de la contraseña (login y registro) -->
+          <div class="pw-rules" [class.ok]="passwordValida" aria-live="polite">
+            <div class="pw-head">
+              <span class="pw-title">Tu contraseña debe incluir</span>
+              <span class="pw-count" [class.done]="passwordValida">
+                {{ reglasCumplidas }}/{{ reglasPassword.length }}
+              </span>
+            </div>
+
+            <div class="pw-bar">
+              <span *ngFor="let r of reglasPassword; let i = index" [class.on]="i < reglasCumplidas">
+              </span>
             </div>
 
             <ul class="pw-list">
